@@ -35,12 +35,12 @@ export function Experience() {
               <TimelineDot className="bg-black dark:bg-white" active />
             </TimelineConnector>
             <TimelineContent>
-              <TimelineTime>Sep 2025 - Present</TimelineTime>
+              <TimelineTime>Jan 2026 - Present</TimelineTime>
               <TimelineTitle>
-                Co-founder to a <span className="font-semibold">Productivity Platform</span>
+                Founder to a <span className="font-semibold">Health Platform</span>
               </TimelineTitle>
               <TimelineDescription>
-                Bootstrapping my way to 10k MRR
+                Building an AI Native application that fixes posture through the lense of biomechanics.
               </TimelineDescription>
             </TimelineContent>
           </MotionTimelineItem>

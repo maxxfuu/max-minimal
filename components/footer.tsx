@@ -14,7 +14,7 @@ export function Footer() {
           {" "}
           <Link href="https://leetcode.com/maxxfuu" target="_blank" className="text-primary border-b border-dashed border-muted-foreground cursor-pointer">LeetCode</Link>
         </p>
-        <p className="text-muted-foreground text-xs">© 2025 Max Fu. All rights reserved.</p>
+        <p className="text-muted-foreground text-xs">© 2026 Max Fu. All rights reserved.</p>
       </footer>
     </div>
   );

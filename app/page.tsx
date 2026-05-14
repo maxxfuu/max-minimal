@@ -1,5 +1,6 @@
 import { Experience } from "@/components/experience";
 import { Projects } from "@/components/projects";
+import { Calendar } from "@/components/calendar";
 import Link from "next/link";
 
 export default function Page() {
@@ -8,23 +9,20 @@ export default function Page() {
       <div className="flex flex-col">
         <h1 className="text-4xl">i'm <span className="font-bold">max</span>{", a "}
           <Link href="https://www.linkedin.com/in/maxxfuu" target="_blank">
-            <span className="inline-flex items-center text-primary border-b border-dashed border-muted-foreground cursor-pointer">software engineer*</span>{" "}
+            <span className="inline-flex items-center text-primary border-b border-dashed border-muted-foreground cursor-pointer">software engineer</span>.{" "}
           </Link>
-          obsessed with design, web developement, and systems programming.
         </h1>
         <p className="font-normal text-gray-500 my-8 max-w-xl dark:text-gray-200">
           * im a {" full-time "}
           <Link href="https://www.linkedin.com/in/maxxfuu" target="_blank">
             <span className="inline-flex items-center text-gray-500 border-b border-dashed border-muted-foreground dark:text-gray-200 cursor-pointer">student</span>
-          </Link>, and when i'm not studying or building, i'm experimenting with new recipes, pursuing {" "}
+          </Link>, and when i'm not studying or coding, i'm trying new recipes, pursuing {" "}
           <Link href="https://www.instagram.com/max_lyfts" target="_blank">
             <span className="inline-flex items-center text-gray-500 border-b border-dashed border-muted-foreground dark:text-gray-200 cursor-pointer">powerlifting</span>
-          </Link>,
-         and occasionally snowboarding.
+          </Link>, reading, and occasionally golfing.
         </p>
       </div>
-
-      <br />
+      <Calendar />
       <Experience />
       <Projects />
     </div>
