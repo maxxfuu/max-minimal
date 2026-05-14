@@ -37,7 +37,7 @@ export function Experience() {
             <TimelineContent>
               <TimelineTime>Jan 2026 - Present</TimelineTime>
               <TimelineTitle>
-                Founder to a <span className="font-semibold">Health Platform</span>
+                Co-Founder to a <span className="font-semibold">Health Platform</span>
               </TimelineTitle>
               <TimelineDescription>
                 Building an AI Native application that fixes posture through the lense of biomechanics.
