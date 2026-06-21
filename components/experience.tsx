@@ -3,15 +3,16 @@
 import { Timeline, TimelineConnector, TimelineDot, TimelineContent, TimelineDescription, TimelineItem, TimelineTime, TimelineTitle } from "./ui/timeline";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import type { CSSProperties, ReactNode } from "react";
 
-const MotionTimelineItem = motion(TimelineItem);
+const MotionTimelineItem = motion.create(TimelineItem);
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15, // increased stagger for more distinct 1-by-1 feel
+      staggerChildren: 0.15,
     },
   },
 };
@@ -21,6 +22,83 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+function getDotStyle(index: number, total: number): CSSProperties {
+  const opacityPercent = total <= 1 ? 100 : 100 - (index / (total - 1)) * 90;
+
+  return {
+    backgroundColor: `color-mix(in oklab, var(--foreground) ${opacityPercent}%, transparent)`,
+  };
+}
+
+type ExperienceEntry = {
+  time: string;
+  title: ReactNode;
+  description?: string;
+  titleClassName?: string;
+};
+
+const experiences: ExperienceEntry[] = [
+  {
+    time: "Jan 2026 - Present",
+    title: <>Co-Founder of a <span className="font-semibold">Health Platform</span></>,
+    description: "Building an AI-native application that improves posture through the lens of biomechanics.",
+  },
+  {
+    time: "May 2025 - Aug 2025",
+    title: (
+      <>
+        <span className="font-semibold">Software Engineer Intern</span> at{" "}
+        <Link href="https://machyna.com/" target="_blank">
+          <span className="text-muted-foreground border-dashed border-b border-muted-foreground">Machyna</span>
+        </Link>
+      </>
+    ),
+    description: "Built a serverless file management system using AWS Lambda, AppSync, and S3.",
+  },
+  {
+    time: "Aug 2024 - Dec 2024",
+    title: "Deep Learning Researcher",
+    titleClassName: "font-semibold",
+    description: "Researched mechanistic interpretability of LLMs to mitigate sycophantic behavior.",
+  },
+  {
+    time: "Aug 2024 - Dec 2024",
+    title: "Undergraduate Teaching Assistant",
+    titleClassName: "font-semibold",
+    description: "Facilitated lectures for 150+ students in electrical engineering programming.",
+  },
+  {
+    time: "Oct 2023 - Oct 2024",
+    title: "Undergraduate Research Assistant",
+    titleClassName: "font-semibold",
+    description: "Developed an LLM-based autograder, improving scoring accuracy and efficiency.",
+  },
+  {
+    time: "Dec 2023 - Aug 2024",
+    title: "SIG AI Lead @ ACM, UC Merced",
+    titleClassName: "font-semibold",
+    description: "Led AI workshops on deep learning and LLMs for 50+ active ACM members.",
+  },
+  {
+    time: "Jun 2022 - Jun 2023",
+    title: "Powerlifting Coaching Business",
+    titleClassName: "font-semibold",
+    description: "Coached 6 collegiate athletes to nationals across CTPA, HKPF, and BPU.",
+  },
+  {
+    time: "Dec 2020 - Dec 2020",
+    title: "All Young International Deadlift Open",
+    titleClassName: "font-semibold",
+    description: "Placed in the top 25% in the deadlift, pulling 210 kg in the Open Class as a 74 kg sub-junior.",
+  },
+  {
+    time: "Dec 2019 - Dec 2019",
+    title: "HKWPA Regionals",
+    titleClassName: "font-semibold",
+    description: "Placed 3rd overall at HKPF Regionals in the Open Class as a sub-junior.",
+  },
+];
+
 export function Experience() {
   return (
     <motion.div
@@ -28,99 +106,28 @@ export function Experience() {
       initial="hidden"
       animate="visible"
     >
-      <div className="max-w-xl mx-auto tracking-tight">
+      <div className="max-w-2xl mx-auto tracking-tight">
         <Timeline>
-          <MotionTimelineItem variants={itemVariants}>
-            <TimelineConnector>
-              <TimelineDot className="bg-black dark:bg-white" active />
-            </TimelineConnector>
-            <TimelineContent>
-              <TimelineTime>Jan 2026 - Present</TimelineTime>
-              <TimelineTitle>
-                Co-Founder to a <span className="font-semibold">Health Platform</span>
-              </TimelineTitle>
-              <TimelineDescription>
-                Building an AI Native application that fixes posture through the lense of biomechanics.
-              </TimelineDescription>
-            </TimelineContent>
-          </MotionTimelineItem>
-
-          <MotionTimelineItem variants={itemVariants}>
-            <TimelineConnector>
-              <TimelineDot className="bg-black/80 dark:bg-white/80" />
-            </TimelineConnector>
-            <TimelineContent>
-              <TimelineTime>May 2025 - Aug 2025</TimelineTime>
-              <TimelineTitle>
-                <span className="font-semibold">Software Engineer Intern</span> at{" "}
-                <Link href="https://machyna.com/" target="_blank">
-                  <span className="text-muted-foreground border-dashed border-b border-muted-foreground">Machyna</span>
-                </Link>
-              </TimelineTitle>
-              <TimelineDescription>
-                Built a serverless file management system using AWS Lambda, AppSync, and S3
-              </TimelineDescription>
-            </TimelineContent>
-          </MotionTimelineItem>
-
-          <MotionTimelineItem variants={itemVariants}>
-            <TimelineConnector>
-              <TimelineDot className="bg-black/60 dark:bg-white/60" />
-            </TimelineConnector>
-            <TimelineContent>
-              <TimelineTime>Aug 2024 - Dec 2024</TimelineTime>
-              <TimelineTitle className="font-semibold">
-                Deep Learning Researcher
-              </TimelineTitle>
-              <TimelineDescription>
-                Research on mechanistic interpretability of LLM, mitigating sycophantic behaviors
-              </TimelineDescription>
-            </TimelineContent>
-          </MotionTimelineItem>
-
-          <MotionTimelineItem variants={itemVariants}>
-            <TimelineConnector>
-              <TimelineDot className="bg-black/40 dark:bg-white/40" />
-            </TimelineConnector>
-            <TimelineContent>
-              <TimelineTime>Aug 2024 - Dec 2024</TimelineTime>
-              <TimelineTitle className="font-semibold">
-                Undergraduate Teaching Assistant
-              </TimelineTitle>
-              <TimelineDescription>
-                Facilitated lectures for 150+ students in Electrical Engineering Programming
-              </TimelineDescription>
-            </TimelineContent>
-          </MotionTimelineItem>
-
-          <MotionTimelineItem variants={itemVariants}>
-            <TimelineConnector>
-              <TimelineDot className="bg-black/20 dark:bg-white/20" />
-            </TimelineConnector>
-            <TimelineContent>
-              <TimelineTime>Oct 2023 - Oct 2024</TimelineTime>
-              <TimelineTitle className="font-semibold">
-                Undergraduate Research Assistant
-              </TimelineTitle>
-              <TimelineDescription>
-                Developed an LLM-based autograder, improving scoring accuracy and efficiency.
-              </TimelineDescription>
-            </TimelineContent>
-          </MotionTimelineItem>
-
-          <MotionTimelineItem variants={itemVariants}>
-            <TimelineConnector>
-              <TimelineDot className="bg-black/10 dark:bg-white/10" />
-            </TimelineConnector>
-            <TimelineContent>
-              <TimelineTime>June 2023 - Aug 2023</TimelineTime>
-              <TimelineTitle className="font-semibold">
-                Moved from Taiwan to California
-              </TimelineTitle>
-            </TimelineContent>
-          </MotionTimelineItem>
+          {experiences.map((entry, index) => (
+              <MotionTimelineItem key={`${entry.time}-${index}`} variants={itemVariants}>
+                <TimelineConnector>
+                  <TimelineDot
+                    className="bg-transparent"
+                    style={getDotStyle(index, experiences.length)}
+                    active={index === 0}
+                  />
+                </TimelineConnector>
+                <TimelineContent>
+                  <TimelineTime>{entry.time}</TimelineTime>
+                  <TimelineTitle className={entry.titleClassName}>{entry.title}</TimelineTitle>
+                  {entry.description && (
+                    <TimelineDescription>{entry.description}</TimelineDescription>
+                  )}
+                </TimelineContent>
+              </MotionTimelineItem>
+          ))}
         </Timeline>
       </div>
     </motion.div>
-  )
+  );
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className="max-w-2xl mx-auto tracking-tight my-24 px-8">
+    <div className="max-w-3xl mx-auto tracking-tight my-24 px-8">
       <div className="flex flex-col">
         <h1 className="text-4xl">i'm <span className="font-bold">max</span>{", a "}
           <Link href="https://www.linkedin.com/in/maxxfuu" target="_blank">
@@ -16,9 +16,13 @@ export default function Page() {
           * im a {" full-time "}
           <Link href="https://www.linkedin.com/in/maxxfuu" target="_blank">
             <span className="inline-flex items-center text-gray-500 border-b border-dashed border-muted-foreground dark:text-gray-200 cursor-pointer">student</span>
-          </Link>, and when i'm not studying or coding, i'm trying new recipes, pursuing {" "}
-          <Link href="https://www.instagram.com/max_lyfts" target="_blank">
-            <span className="inline-flex items-center text-gray-500 border-b border-dashed border-muted-foreground dark:text-gray-200 cursor-pointer">powerlifting</span>
+          </Link>, and when i'm not studying or {" "}
+          <Link href="https://www.github.com/maxxfuu" target="_blank" className="inline-flex items-center text-gray-500 border-b border-dashed border-muted-foreground dark:text-gray-200 cursor-pointer">
+            coding
+          </Link>
+          , i'm trying new recipes, {" "}
+          <Link href="https://www.instagram.com/max_lyfts" target="_blank"> 
+            bodybuilding
           </Link>, reading, and occasionally golfing.
         </p>
       </div>
