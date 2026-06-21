@@ -49,7 +49,7 @@ const experiences: ExperienceEntry[] = [
       <>
         <span className="text-foreground">Software Engineer Intern</span> at{" "}
         <Link href="https://machyna.com/" target="_blank">
-          <span className="border-b border-dashed border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground">Machyna</span>
+          <span className="border-b border-dashed border-foreground text-foreground transition-colors hover:border-foreground hover:text-foreground">Machyna</span>
         </Link>
       </>
     ),
@@ -106,7 +106,7 @@ export function Experience() {
       initial="hidden"
       animate="visible"
     >
-      <div className="tracking-tight">
+      <div className="">
         <Timeline>
           {experiences.map((entry, index) => (
               <MotionTimelineItem key={`${entry.time}-${index}`} variants={itemVariants}>

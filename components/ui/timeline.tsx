@@ -75,7 +75,7 @@ const TimelineTitle = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm leading-snug mb-1 text-foreground", className)}
+    className={cn("font-medium text-sm leading-snug mb-1 text-foreground", className)}
     {...props}
   >
     {children}

@@ -49,7 +49,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </p>
         </header>
 
-        <BlogMarkdown body={post.body} />
+        <BlogMarkdown body={post.body} title={post.title} />
       </article>
     </main>
   );

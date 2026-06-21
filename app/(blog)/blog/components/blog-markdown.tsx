@@ -20,11 +20,19 @@ function renderInlineMarkdown(text: string) {
   });
 }
 
-export function BlogMarkdown({ body }: { body: string }) {
+function normalizeHeading(text: string) {
+  return text.trim().toLowerCase();
+}
+
+interface BlogMarkdownProps {
+  body: string;
+  title?: string;
+}
+
+export function BlogMarkdown({ body, title }: BlogMarkdownProps) {
   const lines = body.split("\n");
   const elements: ReactNode[] = [];
   let index = 0;
-  let skippedTitle = false;
 
   while (index < lines.length) {
     const line = lines[index];
@@ -60,35 +68,71 @@ export function BlogMarkdown({ body }: { body: string }) {
       continue;
     }
 
-    if (line.startsWith("## ")) {
-      elements.push(
-        <h2
-          key={`h2-${index}`}
-          className="mt-16 mb-6 text-xl font-normal lowercase tracking-tight text-foreground md:text-2xl"
-        >
-          {renderInlineMarkdown(line.slice(3).toLowerCase())}
-        </h2>
-      );
-      index += 1;
-      continue;
-    }
+    const headingMatch = line.match(/^(#{1,3})\s+(.*)$/);
 
-    if (line.startsWith("# ")) {
-      if (!skippedTitle) {
-        skippedTitle = true;
+    if (headingMatch) {
+      const [, hashes, headingText] = headingMatch;
+      const level = hashes.length;
+
+      if (
+        level === 1 &&
+        title &&
+        normalizeHeading(headingText) === normalizeHeading(title)
+      ) {
         index += 1;
         continue;
       }
 
-      elements.push(
-        <h2
-          key={`h1-${index}`}
-          className="mt-16 mb-6 text-2xl font-normal lowercase tracking-tight md:text-3xl"
-        >
-          {renderInlineMarkdown(line.slice(2).toLowerCase())}
-        </h2>
-      );
+      if (level === 1) {
+        elements.push(
+          <h2
+            key={`h2-${index}`}
+            className="mt-16 mb-6 text-2xl font-normal tracking-tight text-foreground md:text-3xl"
+          >
+            {renderInlineMarkdown(headingText)}
+          </h2>
+        );
+      } else if (level === 2) {
+        elements.push(
+          <h3
+            key={`h3-${index}`}
+            className="mt-12 mb-4 text-xl font-normal tracking-tight text-foreground md:text-2xl"
+          >
+            {renderInlineMarkdown(headingText)}
+          </h3>
+        );
+      } else {
+        elements.push(
+          <h4
+            key={`h4-${index}`}
+            className="mt-10 mb-3 text-lg font-normal tracking-tight text-foreground"
+          >
+            {renderInlineMarkdown(headingText)}
+          </h4>
+        );
+      }
+
       index += 1;
+      continue;
+    }
+
+    if (line.startsWith("> ") || line === ">") {
+      const calloutLines: string[] = [];
+
+      while (index < lines.length && (lines[index].startsWith("> ") || lines[index] === ">")) {
+        calloutLines.push(lines[index].replace(/^>\s?/, ""));
+        index += 1;
+      }
+
+      elements.push(
+        <aside
+          key={`callout-${index}`}
+          className="my-10 border-l-2 border-foreground/20 bg-muted/50 px-5 py-4 text-[0.98rem] leading-[1.85] text-muted-foreground"
+        >
+          {renderInlineMarkdown(calloutLines.join(" "))}
+        </aside>
+      );
+
       continue;
     }
 
@@ -120,7 +164,9 @@ export function BlogMarkdown({ body }: { body: string }) {
     while (
       index < lines.length &&
       lines[index].trim() &&
-      !lines[index].startsWith("#") &&
+      !lines[index].match(/^#{1,3}\s+/) &&
+      !lines[index].startsWith("> ") &&
+      lines[index] !== ">" &&
       !lines[index].startsWith("- ") &&
       !lines[index].startsWith("```")
     ) {
