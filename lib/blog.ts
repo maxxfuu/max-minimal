@@ -12,8 +12,13 @@ export interface BlogPost {
   href: string;
 }
 
+function normalizeDashes(value: string) {
+  return value.replace(/[\u2010-\u2015\u2212\uFE58\uFE63\uFF0D]/g, "-");
+}
+
 function parseFrontmatter(fileContent: string) {
-  const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  const normalizedContent = normalizeDashes(fileContent);
+  const frontmatterMatch = normalizedContent.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
 
   if (!frontmatterMatch) {
     return {
@@ -36,7 +41,9 @@ function parseFrontmatter(fileContent: string) {
         }
 
         const key = line.slice(0, separatorIndex).trim();
-        const value = line.slice(separatorIndex + 1).trim().replace(/^"|"$/g, "");
+        const value = normalizeDashes(
+          line.slice(separatorIndex + 1).trim().replace(/^"|"$/g, "")
+        );
 
         return [key, value];
       })
