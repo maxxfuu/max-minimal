@@ -1,6 +1,6 @@
 ---
 title: "Why almost everyone has poor posture"
-date: "2026–03–06"
+date: "2026–06-21"
 summary: "Understanding the fundamental principles of biomechanics and a practical guide on fixing your posture"
 ---
 ## Fundamental Principles of Biomechanics 
