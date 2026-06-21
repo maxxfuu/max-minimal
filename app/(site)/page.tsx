@@ -11,7 +11,7 @@ import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 
 const inlineLink =
-  "border-b border-dashed border-border text-foreground transition-colors hover:border-foreground";
+  "border-b border-dashed border-muted-foreground text-foreground transition-colors hover:border-foreground";
 
 export default function Page() {
   return (
