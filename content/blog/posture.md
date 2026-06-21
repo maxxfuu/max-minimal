@@ -35,7 +35,7 @@ The longer you're able to breathe through this new position effortlessly, the be
 
 You can't change what you can't see. The pattern is specific to you — which side you favor, which part of your stride you're stuck in, which areas need to open and which need to settle. That's hard to feel from the inside, and it's why generic stretches rarely land.
 
-My Co–Founder and I are building Align, it is a companion that helps you fix your posture forever. Point your phone camera at yourself, take a few assessments, and it'll coach you in real time on how to fix your posture.
+My Co–Founder and I are building Align, it is a companion that helps you fix your posture forever. Point your phone camera at yourself, take a few assessments, and it'll coach you in real time on how to fix your posture. Join the waitlist and fix your posture!
 
 > Align is in early access, and we're inviting a small group of beta testers to try it and shape where it goes. If you're interested, sign up for the waitlist. 
 
