@@ -9,7 +9,7 @@ function renderInlineMarkdown(text: string) {
       return (
         <code
           key={`${part}-${index}`}
-          className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-neutral-900"
+          className="font-mono text-[0.9em] text-muted-foreground"
         >
           {part.slice(1, -1)}
         </code>
@@ -24,6 +24,7 @@ export function BlogMarkdown({ body }: { body: string }) {
   const lines = body.split("\n");
   const elements: ReactNode[] = [];
   let index = 0;
+  let skippedTitle = false;
 
   while (index < lines.length) {
     const line = lines[index];
@@ -46,9 +47,9 @@ export function BlogMarkdown({ body }: { body: string }) {
       elements.push(
         <pre
           key={`code-${index}`}
-          className="overflow-x-auto rounded-2xl border border-neutral-200 bg-neutral-950 p-4 text-sm text-neutral-100 dark:border-neutral-800"
+          className="my-10 overflow-x-auto border-y border-border py-6 font-mono text-sm leading-relaxed text-foreground"
         >
-          <div className="mb-3 text-xs uppercase tracking-[0.2em] text-neutral-400">
+          <div className="mb-3 font-sans text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             {language}
           </div>
           <code>{codeLines.join("\n")}</code>
@@ -61,8 +62,11 @@ export function BlogMarkdown({ body }: { body: string }) {
 
     if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={`h2-${index}`} className="mt-10 text-2xl font-semibold">
-          {renderInlineMarkdown(line.slice(3))}
+        <h2
+          key={`h2-${index}`}
+          className="mt-16 mb-6 text-xl font-normal lowercase tracking-tight text-foreground md:text-2xl"
+        >
+          {renderInlineMarkdown(line.slice(3).toLowerCase())}
         </h2>
       );
       index += 1;
@@ -70,10 +74,19 @@ export function BlogMarkdown({ body }: { body: string }) {
     }
 
     if (line.startsWith("# ")) {
+      if (!skippedTitle) {
+        skippedTitle = true;
+        index += 1;
+        continue;
+      }
+
       elements.push(
-        <h1 key={`h1-${index}`} className="mt-6 text-3xl font-semibold">
-          {renderInlineMarkdown(line.slice(2))}
-        </h1>
+        <h2
+          key={`h1-${index}`}
+          className="mt-16 mb-6 text-2xl font-normal lowercase tracking-tight md:text-3xl"
+        >
+          {renderInlineMarkdown(line.slice(2).toLowerCase())}
+        </h2>
       );
       index += 1;
       continue;
@@ -90,7 +103,7 @@ export function BlogMarkdown({ body }: { body: string }) {
       elements.push(
         <ul
           key={`list-${index}`}
-          className="ml-5 list-disc space-y-2 text-neutral-700 dark:text-neutral-300"
+          className="my-8 ml-5 list-disc space-y-3 text-base leading-[1.85] text-foreground"
         >
           {items.map((item, itemIndex) => (
             <li key={`${item}-${itemIndex}`}>{renderInlineMarkdown(item)}</li>
@@ -116,7 +129,10 @@ export function BlogMarkdown({ body }: { body: string }) {
     }
 
     elements.push(
-      <p key={`p-${index}`} className="leading-8 text-neutral-700 dark:text-neutral-300">
+      <p
+        key={`p-${index}`}
+        className="text-base leading-[1.85] text-foreground md:text-[1.05rem]"
+      >
         {renderInlineMarkdown(paragraphLines.join(" "))}
       </p>
     );

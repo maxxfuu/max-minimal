@@ -1,13 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-export const BLOG_YEARS = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
-
 const blogContentDirectory = path.join(process.cwd(), "content", "blog");
 
 export interface BlogPost {
   slug: string;
-  year: number;
   title: string;
   date: string;
   summary: string;
@@ -57,7 +54,9 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
     withFileTypes: true,
   });
 
-  const markdownFiles = entries.filter((entry) => entry.isFile() && entry.name.endsWith(".md"));
+  const markdownFiles = entries.filter(
+    (entry) => entry.isFile() && entry.name.endsWith(".md") && entry.name !== "README.md"
+  );
 
   const posts = await Promise.all(
     markdownFiles.map(async (entry) => {
@@ -67,22 +66,19 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
       const fullPath = path.join(blogContentDirectory, relativePath);
       const fileContent = await fs.readFile(fullPath, "utf8");
       const { metadata, body } = parseFrontmatter(fileContent);
-      const [yearDirectory, ...rest] = relativePath.replace(/\.md$/, "").split(path.sep);
-      const year = Number(yearDirectory);
-      const slug = rest.join("/");
+      const slug = path.basename(relativePath, ".md");
 
-      if (!Number.isFinite(year) || !slug) {
+      if (!slug) {
         return null;
       }
 
       return {
         slug,
-        year,
         title: String(metadata.title ?? slug),
-        date: String(metadata.date ?? `${year}-01-01`),
+        date: String(metadata.date ?? "1970-01-01"),
         summary: String(metadata.summary ?? ""),
         body,
-        href: `/blog/${year}/${slug}`,
+        href: `/blog/${slug}`,
       };
     })
   );
@@ -92,10 +88,10 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export async function getBlogPost(year: number, slug: string) {
+export async function getBlogPost(slug: string) {
   const posts = await getBlogPosts();
 
-  return posts.find((post) => post.year === year && post.slug === slug) ?? null;
+  return posts.find((post) => post.slug === slug) ?? null;
 }
 
 export function formatBlogDate(date: string) {
@@ -109,5 +105,6 @@ export function formatBlogDate(date: string) {
     month: "long",
     day: "numeric",
     year: "numeric",
-  }).format(parsedDate);
+  })
+    .format(parsedDate);
 }

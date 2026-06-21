@@ -1,7 +1,7 @@
 ---
-title: "Recreating the Blog Year Nav Sidebar"
+title: "Why almost everyone has poor posture"
 date: "2026-03-06"
-summary: "A walkthrough for rebuilding the animated year-based sidebar navigation."
+summary: "Understanding the fundamental principles for poor posture and a practical guide in fixing it"
 ---
 
 # Recreating the Blog Year Nav Sidebar

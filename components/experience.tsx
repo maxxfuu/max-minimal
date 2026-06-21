@@ -40,16 +40,16 @@ type ExperienceEntry = {
 const experiences: ExperienceEntry[] = [
   {
     time: "Jan 2026 - Present",
-    title: <>Co-Founder of a <span className="font-semibold">Health Platform</span></>,
+    title: <>Co-Founder of a <span className="text-foreground">Health Platform</span></>,
     description: "Building an AI-native application that improves posture through the lens of biomechanics.",
   },
   {
     time: "May 2025 - Aug 2025",
     title: (
       <>
-        <span className="font-semibold">Software Engineer Intern</span> at{" "}
+        <span className="text-foreground">Software Engineer Intern</span> at{" "}
         <Link href="https://machyna.com/" target="_blank">
-          <span className="text-muted-foreground border-dashed border-b border-muted-foreground">Machyna</span>
+          <span className="border-b border-dashed border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground">Machyna</span>
         </Link>
       </>
     ),
@@ -58,43 +58,43 @@ const experiences: ExperienceEntry[] = [
   {
     time: "Aug 2024 - Dec 2024",
     title: "Deep Learning Researcher",
-    titleClassName: "font-semibold",
+    titleClassName: "text-foreground",
     description: "Researched mechanistic interpretability of LLMs to mitigate sycophantic behavior.",
   },
   {
     time: "Aug 2024 - Dec 2024",
     title: "Undergraduate Teaching Assistant",
-    titleClassName: "font-semibold",
+    titleClassName: "text-foreground",
     description: "Facilitated lectures for 150+ students in electrical engineering programming.",
   },
   {
     time: "Oct 2023 - Oct 2024",
     title: "Undergraduate Research Assistant",
-    titleClassName: "font-semibold",
+    titleClassName: "text-foreground",
     description: "Developed an LLM-based autograder, improving scoring accuracy and efficiency.",
   },
   {
     time: "Dec 2023 - Aug 2024",
     title: "SIG AI Lead @ ACM, UC Merced",
-    titleClassName: "font-semibold",
+    titleClassName: "text-foreground",
     description: "Led AI workshops on deep learning and LLMs for 50+ active ACM members.",
   },
   {
     time: "Jun 2022 - Jun 2023",
     title: "Powerlifting Coaching Business",
-    titleClassName: "font-semibold",
+    titleClassName: "text-foreground",
     description: "Coached 6 collegiate athletes to nationals across CTPA, HKPF, and BPU.",
   },
   {
     time: "Dec 2020 - Dec 2020",
     title: "All Young International Deadlift Open",
-    titleClassName: "font-semibold",
+    titleClassName: "text-foreground",
     description: "Placed in the top 25% in the deadlift, pulling 210 kg in the Open Class as a 74 kg sub-junior.",
   },
   {
     time: "Dec 2019 - Dec 2019",
     title: "HKWPA Regionals",
-    titleClassName: "font-semibold",
+    titleClassName: "text-foreground",
     description: "Placed 3rd overall at HKPF Regionals in the Open Class as a sub-junior.",
   },
 ];
@@ -106,7 +106,7 @@ export function Experience() {
       initial="hidden"
       animate="visible"
     >
-      <div className="max-w-2xl mx-auto tracking-tight">
+      <div className="tracking-tight">
         <Timeline>
           {experiences.map((entry, index) => (
               <MotionTimelineItem key={`${entry.time}-${index}`} variants={itemVariants}>

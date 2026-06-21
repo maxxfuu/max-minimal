@@ -1,11 +1,9 @@
 # Blog Content
 
-Write blog posts in this directory.
+Write blog posts in this directory as flat markdown files:
 
-Suggested structure:
-
-- `content/blog/2026/my-post.md`
-- `content/blog/2025/another-post.md`
+- `content/blog/my-post.md`
+- `content/blog/another-post.md`
 
 Each post can use simple frontmatter like this:
 
@@ -17,4 +15,4 @@ summary: "One-line summary."
 ---
 ```
 
-This directory is not wired into `app/blog/page.tsx` yet, but it is now the recommended place to author blog content.
+Posts are sorted by `date` in frontmatter (newest first) and published at `/blog/[slug]`.

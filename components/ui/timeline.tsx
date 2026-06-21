@@ -75,7 +75,7 @@ const TimelineTitle = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm leading-none mb-1", className)}
+    className={cn("text-sm leading-snug mb-1 text-foreground", className)}
     {...props}
   >
     {children}
@@ -89,7 +89,7 @@ const TimelineDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm leading-relaxed text-foreground/90", className)}
     {...props}
   />
 ))
@@ -101,7 +101,7 @@ const TimelineTime = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-xs text-muted-foreground mb-1", className)}
+    className={cn("mb-1 font-sans text-xs text-muted-foreground", className)}
     {...props}
   />
 ))

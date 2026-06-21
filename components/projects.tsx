@@ -91,7 +91,7 @@ export function Projects() {
             key={key}
             role="button"
             tabIndex={0}
-            className="group relative aspect-[16/9] w-full overflow-hidden rounded-md border-0 bg-white dark:bg-black p-0 cursor-pointer shadow-[0px_0px_0px_1px_rgba(9,9,11,0.08),0px_1px_2px_-1px_rgba(9,9,11,0.08),0px_2px_4px_0px_rgba(9,9,11,0.04)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="group relative aspect-[16/9] w-full overflow-hidden rounded-md border-0 bg-white p-0 cursor-pointer shadow-[0px_0px_0px_1px_rgba(9,9,11,0.08),0px_1px_2px_-1px_rgba(9,9,11,0.08),0px_2px_4px_0px_rgba(9,9,11,0.04)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-card"
             onClick={() => handleProjectClick(key, value)}
             onKeyDown={(e) => e.key === "Enter" && handleProjectClick(key, value)}
           >
@@ -104,15 +104,15 @@ export function Projects() {
             />
             {/* Description card: inset with margins, slides up on hover/focus */}
             <div
-              className="absolute bottom-2.5 left-2.5 right-2.5 top-2.5 rounded-md bg-white/95 dark:bg-black/95 backdrop-blur-sm px-4 py-3.5 text-[13px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_1px_2px_-1px_rgba(0,0,0,0.08),0px_2px_4px_0px_rgba(0,0,0,0.04)] transition-transform duration-300 ease-out translate-y-[calc(100%+1.5rem)] group-hover:translate-y-0 group-focus-visible:translate-y-0 pointer-events-none"
+              className="absolute bottom-2.5 left-2.5 right-2.5 top-2.5 rounded-md bg-white/95 px-4 py-3.5 text-[13px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_1px_2px_-1px_rgba(0,0,0,0.08),0px_2px_4px_0px_rgba(0,0,0,0.04)] backdrop-blur-sm transition-transform duration-300 ease-out translate-y-[calc(100%+1.5rem)] group-hover:translate-y-0 group-focus-visible:translate-y-0 pointer-events-none dark:bg-card/95"
             >
               <div className="flex flex-row justify-between items-center">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{value.title}</h3>
+                <h3 className="font-semibold text-foreground">{value.title}</h3>
                 <Link href={value.link || "#"} target="_blank">
                   <SquareArrowOutUpRight className="w-4 h-4" />
                 </Link>
               </div>
-              <p className="mt-1 leading-snug text-gray-600 dark:text-gray-200">{value.description}</p>
+              <p className="mt-1 leading-snug text-foreground/90">{value.description}</p>
             </div>
           </Card>
         ))}
