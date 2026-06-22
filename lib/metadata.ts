@@ -5,27 +5,28 @@ export const siteName = "Max Fu";
 export const defaultDescription =
   "Software engineer, entrepreneur, and student.";
 
-const defaultOgImage = {
-  url: "/favicon.ico",
-  width: 1200,
-  height: 630,
-  alt: siteName,
-};
+// Previously the social preview image was hardcoded to the favicon, which is
+// why sharing the site (e.g. in iMessage) showed the favicon as the card image.
+// Open Graph images are now generated dynamically via file-based
+// `opengraph-image` routes (app/opengraph-image.tsx for the site default and
+// app/(blog)/blog/[slug]/opengraph-image.tsx per essay).
+// const defaultOgImage = {
+//   url: "/favicon.ico",
+//   width: 1200,
+//   height: 630,
+//   alt: siteName,
+// };
 
 export function createPageMetadata({
   title,
   description = defaultDescription,
   path = "/",
   type = "website",
-  // When true, omit the explicit favicon image so a file-based
-  // `opengraph-image` route can supply a dynamically generated image.
-  dynamicImage = false,
 }: {
   title: string;
   description?: string;
   path?: string;
   type?: "website" | "article";
-  dynamicImage?: boolean;
 }): Metadata {
   const url = `${siteUrl}${path}`;
   const pageTitle = path === "/" ? title : `${title} · ${siteName}`;
@@ -43,13 +44,11 @@ export function createPageMetadata({
       siteName,
       locale: "en_US",
       type,
-      ...(dynamicImage ? {} : { images: [defaultOgImage] }),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      ...(dynamicImage ? {} : { images: [defaultOgImage.url] }),
     },
   };
 }
