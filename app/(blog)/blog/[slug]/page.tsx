@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     description: post.summary || post.title,
     path: `/blog/${slug}`,
     type: "article",
+    dynamicImage: true,
   });
 }
 

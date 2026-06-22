@@ -112,6 +112,7 @@ export function formatBlogDate(date: string) {
     month: "long",
     day: "numeric",
     year: "numeric",
+    timeZone: "UTC",
   })
     .format(parsedDate);
 }

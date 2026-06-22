@@ -17,11 +17,15 @@ export function createPageMetadata({
   description = defaultDescription,
   path = "/",
   type = "website",
+  // When true, omit the explicit favicon image so a file-based
+  // `opengraph-image` route can supply a dynamically generated image.
+  dynamicImage = false,
 }: {
   title: string;
   description?: string;
   path?: string;
   type?: "website" | "article";
+  dynamicImage?: boolean;
 }): Metadata {
   const url = `${siteUrl}${path}`;
   const pageTitle = path === "/" ? title : `${title} · ${siteName}`;
@@ -39,13 +43,13 @@ export function createPageMetadata({
       siteName,
       locale: "en_US",
       type,
-      images: [defaultOgImage],
+      ...(dynamicImage ? {} : { images: [defaultOgImage] }),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [defaultOgImage.url],
+      ...(dynamicImage ? {} : { images: [defaultOgImage.url] }),
     },
   };
 }
