@@ -6,10 +6,10 @@ import { createPageMetadata } from "@/lib/metadata";
 export const metadata: Metadata = createPageMetadata({
   title: "Essays",
   description: "A collection of my literary atrocities on my interests, passions, and experiences...",
-  path: "/blog",
+  path: "/essays",
 });
 
-export default async function Blog() {
+export default async function Essays() {
   const posts = await getBlogPosts();
 
   return (
@@ -19,7 +19,7 @@ export default async function Blog() {
           Essays
         </h1>
         <p className="mx-auto mt-5 max-w-lg font-sans text-sm leading-relaxed text-muted-foreground">
-          A collection of my literary atrocities on my interests, passions, and experiences...
+          A collection of my literary atrocities on my interests, passions, and experiences.
         </p>
       </header>
 

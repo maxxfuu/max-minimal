@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { BlogMarkdown } from "@/app/(blog)/blog/components/blog-markdown";
+import { BlogMarkdown } from "@/app/(essays)/essays/components/blog-markdown";
 import { formatBlogDate, getBlogPost, getBlogPosts } from "@/lib/blog";
 import { createPageMetadata } from "@/lib/metadata";
 import { ArrowLeftIcon } from "lucide-react";
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   return createPageMetadata({
     title: post.title,
     description: post.summary || post.title,
-    path: `/blog/${slug}`,
+    path: `/essays/${slug}`,
     type: "article",
   });
 }
@@ -47,7 +47,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <main className="mx-auto max-w-2xl px-6 pb-24 pt-12 md:px-10 md:pt-16">
       <div className="mb-16 font-sans text-sm">
-        <Link href="/blog" className="text-muted-foreground transition-opacity hover:text-foreground flex items-center gap-2">
+        <Link href="/essays" className="text-muted-foreground transition-opacity hover:text-foreground flex items-center gap-2">
           <ArrowLeftIcon className="w-4 h-4" /> back
         </Link>
       </div>

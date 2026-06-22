@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 function navLabel(active: boolean, label: string) {
   return active ? `• ${label}` : label;
@@ -11,8 +10,9 @@ function navLabel(active: boolean, label: string) {
 export function SiteHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isEssays = pathname.startsWith("/blog");
+  const isEssays = pathname.startsWith("/essays");
   const isResume = pathname === "/resume";
+  const isProjects = pathname === "/projects";
 
   return (
     <header className="mx-auto flex max-w-5xl items-start justify-between px-6 pt-10 md:px-10 md:pt-14">
@@ -31,7 +31,7 @@ export function SiteHeader() {
           {navLabel(isHome, "home")}
         </Link>
         <Link
-          href="/blog"
+          href="/essays"
           className={isEssays ? "text-foreground" : "transition-colors hover:text-foreground"}
         >
           {navLabel(isEssays, "essays")}
@@ -42,7 +42,12 @@ export function SiteHeader() {
         >
           {navLabel(isResume, "resume")}
         </Link>
-        <ThemeToggle />
+        <Link
+          href="/projects"
+          className={isProjects ? "text-foreground" : "transition-colors hover:text-foreground"}
+        >
+          {navLabel(isProjects, "projects")}
+        </Link>
       </nav>
     </header>
   );

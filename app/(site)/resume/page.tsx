@@ -14,14 +14,14 @@ export default function ResumePage() {
         <h1 className="text-4xl font-normal leading-tight tracking-tight md:text-5xl">
           Resume
         </h1>
-        <p className="mt-4 font-sans text-sm lowercase text-muted-foreground">
+        <p className="mt-4 font-sans text-sm text-muted-foreground">
           <a
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-foreground"
           >
-            open in new tab
+            Open in new tab.
           </a>
         </p>
       </header>

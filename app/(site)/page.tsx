@@ -52,15 +52,15 @@ export default function Page() {
             I hope in sharing my work and experiences, you can also feel the same delight and joy in the things that I'm passionate about.
           </p>
         </div>
-        <Link href="/blog" className="text-sm text-foreground transition-opacity hover:text-foreground flex items-center justify-end gap-2 mb-8">
+        <Link href="/essays" className="text-sm text-foreground transition-opacity hover:text-foreground flex items-center justify-end gap-2 mb-8">
           Essays 
           <ArrowRightIcon className="w-4 h-4" />
         </Link>
         <Separator />
         <div className="mt-16">
           <Calendar />
-          <Experience />
-          <Projects />
+          <Experience /> 
+          <Projects limit={2} showViewAll />
         </div>
       </header>
     </main>

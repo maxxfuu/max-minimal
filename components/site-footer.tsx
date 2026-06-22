@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteFooter() {
   return (
@@ -15,6 +16,8 @@ export function SiteFooter() {
         <Link href="https://leetcode.com/maxxfuu" target="_blank" className="transition-colors hover:text-foreground">
           leetcode
         </Link>
+        {" | "}
+        <ThemeToggle />
       </p>
       <p className="mt-3">maxxfuu · {new Date().getFullYear()}</p>
     </footer>

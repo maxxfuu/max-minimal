@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const blogContentDirectory = path.join(process.cwd(), "content", "blog");
+const blogContentDirectory = path.join(process.cwd(), "content", "essays");
 
 export interface BlogPost {
   slug: string;
@@ -85,7 +85,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
         date: String(metadata.date ?? "1970-01-01"),
         summary: String(metadata.summary ?? ""),
         body,
-        href: `/blog/${slug}`,
+        href: `/essays/${slug}`,
       };
     })
   );
