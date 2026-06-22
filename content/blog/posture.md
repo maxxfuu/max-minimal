@@ -25,9 +25,9 @@ Your posture is fixable. You just need to know how to start.
 
 Most people assume the body will physically adapt to a new posture simply because you stretched or worked a muscle. Working a muscle and expecting the bone to settle into place — and the brain to accept it as the new normal — is logically flawed.
 
-The brain decides what position feels safe and available based on the environment, past injuries, and any predispositions. It is constantly scanning for what is possible and what isn't. What's possible is what the brain sets the skeleton to, which then dictates how the muscles function.
+The brain decides what position feels safe and available based on the environment, past injuries, predispositions, and lifestyle. The brain is constantly scanning for what is safe and comfortable and what isn't. What's is safe and comfortable is what the brain sets the skeleton to, which then dictates how the muscles function, which determines the final posture of the body.
 
-So the key is to shift the nervous system out of "fight or flight" and into "rest and digest" — and then, from that calm state, to breathe through postural-restoration exercises that drive the expansion or compression a given area needs. That's how you get out of being stuck in one phase of gait, or out of any compensatory pattern your body has defaulted to.
+When the brain is stuck in "fight or flight", nothing sticks. A brain that senses threat braces your muscles and refuses to explore and adapt to unfamiliar positions. The key is to shift the nervous system out of "fight or flight" and into "rest and digest", and then, from that calm state, to breathe through postural-restoration exercises that drive the expansion or compression a given area needs. That's how you get out of being stuck in one phase of gait, or out of any compensatory pattern your body has defaulted to.
 
 The longer you're able to breathe through this new position effortlessly, the better your posture becomes. When your body feels safe and your breathing is slow, that's the moment an old habit of breathing and moving breaks and a new one forms.
 
