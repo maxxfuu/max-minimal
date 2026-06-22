@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "Resume",
+  description: "Max Fu's resume.",
+  path: "/resume",
+});
+
 export default function ResumePage() {
   return (
     <main className="mx-auto max-w-4xl px-6 pb-24 pt-12 md:px-10 md:pt-16">

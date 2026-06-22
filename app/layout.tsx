@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
+import { rootMetadata } from "@/lib/metadata";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -17,28 +18,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Max Fu",
-  description: "Software Engineer, Entrepreneur, and Student.",
-  icons: {
-    icon: "/favicon.ico",
-  },
-  openGraph: {
-    title: "Max Fu",
-    description: "Software Engineer, Entrepreneur, and Student.",
-    siteName: "Max Fu",
-    images: [
-      {
-        url: "/favicon.ico",
-        width: 1200,
-        height: 630,
-        alt: "Max Fu",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-};
+export const metadata: Metadata = rootMetadata;
 
 export default function RootLayout({
   children,

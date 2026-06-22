@@ -1,13 +1,31 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogMarkdown } from "@/app/(blog)/blog/components/blog-markdown";
 import { formatBlogDate, getBlogPost, getBlogPosts } from "@/lib/blog";
+import { createPageMetadata } from "@/lib/metadata";
 import { ArrowLeftIcon } from "lucide-react";
 
 interface BlogPostPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getBlogPost(slug);
+
+  if (!post) {
+    return {};
+  }
+
+  return createPageMetadata({
+    title: post.title,
+    description: post.summary || post.title,
+    path: `/blog/${slug}`,
+    type: "article",
+  });
 }
 
 export async function generateStaticParams() {

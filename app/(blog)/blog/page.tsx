@@ -1,5 +1,13 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { formatBlogDate, getBlogPosts } from "@/lib/blog";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "Essays",
+  description: "A collection of my literary atrocities on my interests, passions, and experiences...",
+  path: "/blog",
+});
 
 export default async function Blog() {
   const posts = await getBlogPosts();
