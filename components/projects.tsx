@@ -84,8 +84,9 @@ export function Projects() {
   const currentProject = selectedProject ? projects[selectedProject as keyof typeof projects] : null;
 
   return (
-    <>
-      <div className="my-14 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="my-14">
+      <p className="text-sm text-foreground transition-opacity hover:text-foreground flex items-center justify-start">Projects</p>
+      <div className="my-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         {Object.entries(projects).map(([key, value]) => (
           <Card
             key={key}
@@ -165,6 +166,6 @@ export function Projects() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }

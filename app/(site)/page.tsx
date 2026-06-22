@@ -26,7 +26,7 @@ export default function Page() {
             <Link href="https://www.linkedin.com/in/maxxfuu" target="_blank" className={inlineLink}>
               student
             </Link>{" "}
-            studying CSE @ University of California, Merced.
+            studying Computer Science & Engineering at UC Merced.
           </p>
           <p>
             Growing up, I was always intrigued in working on technically challenging and visually appealing projects. Fast forward to today, I have built a
