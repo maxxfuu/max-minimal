@@ -10,6 +10,14 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "Bookie",
+    description:
+      "A local-first ledger that tracks every eval fee, reset, refund, and payout across prop trading firms — cost per funded account, recovery ratio, and your exact breakeven point",
+    image: "/bookie.png",
+    type: "image",
+    link: "https://trybookie.app",
+  },
+  {
     title: "Yagmi",
     description:
       "Create AI Mentors that lets you chat with an “advisor” tailored to your goals, giving you guidance and next steps as you grow",

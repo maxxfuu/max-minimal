@@ -24,7 +24,7 @@ export default async function Essays() {
       </header>
 
       {posts.length > 0 ? (
-        <ol className="divide-y divide-border border-t border-border">
+        <ol className="border-t border-border">
           {posts.map((post) => (
             <li key={post.slug}>
               <Link
