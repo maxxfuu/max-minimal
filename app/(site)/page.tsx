@@ -43,7 +43,7 @@ export default function Page() {
             {} of interests and achievements driven by passion. Over time, that fascination grew into a broader obsession with mastery and execution across different domains.
             <br /><br />
             <p>
-              Lately, that obsession has pulled me deep into the world of model performance, CUDA, inference infrastructure, and everything in between across the inference stack. I'm learning as much as I can, as fast as I can. I'd love to connect with anyone further along this path who's open to sharing what they know and building a connection along the way.
+              Lately, that obsession has pulled me deep into the world of model performance, CUDA, inference infrastructure, and everything in between across the inference stack. I'm learning as much as I can, as fast as I can. I'd love to connect with anyone further along this path who's open to sharing what they know while building a connection along the way.
             </p>
             <br />
             I hope in sharing my work and experiences, you can also feel the same delight and joy in the things that I'm passionate about.
