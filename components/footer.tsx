@@ -6,6 +6,8 @@ export function Footer() {
       <footer className="min-h-18 flex flex-col items-center justify-center gap-2.5">
         <p>For more, check out my
           {" "}
+          <Link href="https://www.x.com/maxxfuu" target="_blank" className="text-primary border-b border-dashed border-muted-foreground cursor-pointer">X</Link>,
+          {" "}
           <Link href="https://www.linkedin.com/in/maxxfuu" target="_blank" className="text-primary border-b border-dashed border-muted-foreground cursor-pointer">LinkedIn</Link>,
           {" "}
           <Link href="https://github.com/maxxfuu" target="_blank" className="text-primary border-b border-dashed border-muted-foreground cursor-pointer">Github</Link>,

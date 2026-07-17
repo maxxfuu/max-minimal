@@ -22,25 +22,18 @@ export default function Page() {
         </h1>
         <div className="my-8 space-y-6 text-base leading-[1.85] text-foreground md:text-[1.05rem]">
           <p>
-            I&apos;m a full-time{" "}
-            <Link href="https://www.linkedin.com/in/maxxfuu" target="_blank" className={inlineLink}>
-              student
-            </Link>{" "}
-            studying Computer Science & Engineering at UC Merced.
-          </p>
-          <p>
             Growing up, I was always intrigued in working on technically challenging and visually appealing projects. Fast forward to today, I have built a
              <HoverCard>
               <HoverCardTrigger> <span className="border-b border-dashed border-muted-foreground text-foreground transition-colors hover:border-foreground cursor-pointer">collection</span></HoverCardTrigger>
               <HoverCardContent>
                 <p className="font-semibold">Achievements and interests:</p>
                 <ul>
-                  <li>- Programming</li>
-                  <li>- Cooking</li>
+                  <li>- Inference Engineering</li>
+                  <li>- Cooking </li>
                   <li>- Powerlifting</li>
-                  <li>- Design</li>
+                  <li>- Cardistry</li>
+                  <li>- Animation Design</li>
                   <li>- Reading</li>
-                  <li>- Marketing</li>
                   <li>- Writing</li>
                   <li>- Filming</li>
                   <li>- Golfing</li>
@@ -49,6 +42,10 @@ export default function Page() {
             </HoverCard>
             {} of interests and achievements driven by passion. Over time, that fascination grew into a broader obsession with mastery and execution across different domains.
             <br /><br />
+            <p>
+              Lately, that obsession has pulled me deep into the world of model performance, CUDA, inference infrastructure, and everything in between across the inference stack. I'm learning as much as I can, as fast as I can. I'd love to connect with anyone further along this path who's open to sharing what they know and building a connection along the way.
+            </p>
+            <br />
             I hope in sharing my work and experiences, you can also feel the same delight and joy in the things that I'm passionate about.
           </p>
         </div>

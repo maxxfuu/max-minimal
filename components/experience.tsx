@@ -93,7 +93,7 @@ const experiences: ExperienceEntry[] = [
   },
   {
     time: "Dec 2019 - Dec 2019",
-    title: "HKWPA Regionals",
+    title: "HKPF Regionals",
     titleClassName: "text-foreground",
     description: "Placed 3rd overall at HKPF Regionals in the Open Class as a sub-junior.",
   },

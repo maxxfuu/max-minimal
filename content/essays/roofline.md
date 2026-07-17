@@ -4,4 +4,5 @@ date: "2026-07-01"
 summary: "A guide on bench marking inference "
 ---
 
-# Work in progress... 
+# Understanding the Roofline Model
+
