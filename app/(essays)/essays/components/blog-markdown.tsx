@@ -136,6 +136,43 @@ export function BlogMarkdown({ body, title }: BlogMarkdownProps) {
       continue;
     }
 
+    const mediaMatch = line.trim().match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+
+    if (mediaMatch) {
+      const [, caption, src] = mediaMatch;
+      const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+
+      elements.push(
+        <figure key={`media-${index}`} className="my-10">
+          {isVideo ? (
+            <video
+              src={src}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full rounded-md border border-border"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={src}
+              alt={caption}
+              className="w-full rounded-md border border-border"
+            />
+          )}
+          {caption ? (
+            <figcaption className="mt-3 text-center font-sans text-xs text-muted-foreground">
+              {caption}
+            </figcaption>
+          ) : null}
+        </figure>
+      );
+
+      index += 1;
+      continue;
+    }
+
     if (line.startsWith("- ")) {
       const items: string[] = [];
 
@@ -168,7 +205,8 @@ export function BlogMarkdown({ body, title }: BlogMarkdownProps) {
       !lines[index].startsWith("> ") &&
       lines[index] !== ">" &&
       !lines[index].startsWith("- ") &&
-      !lines[index].startsWith("```")
+      !lines[index].startsWith("```") &&
+      !lines[index].trim().startsWith("![")
     ) {
       paragraphLines.push(lines[index]);
       index += 1;
