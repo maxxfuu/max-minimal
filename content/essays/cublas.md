@@ -1,6 +1,6 @@
 ---
 title: "A Small cuBLAS Detail With a Deep Lesson"
-date: "2026-07-01"
+date: "2026-07-23"
 summary: "The reasoning behind cuBLAS's operand swap, and the layout lesson hiding inside it."
 ---
 
