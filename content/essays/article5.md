@@ -1,7 +1,7 @@
 ---
-title: "How does the attention mechanism work?"
+title: "Understanding Multi-Head Attention Mechanism"
 date: "2026-09-06"
-summary: "Understanding multi-head attention mechanism"
+summary: "Understanding Multi-Head Attention Mechanism"
 ---
 
 ## Introduction 
