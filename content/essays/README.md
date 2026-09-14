@@ -56,5 +56,9 @@ still readable.
   ````
 
   Bad LaTeX renders in red in place rather than failing the build.
+- `$...$` typesets math inline, in the run of a sentence: `the matrices $W_Q$,
+  $W_K$ and $W_V$`. The dollar signs have to hug the expression — `$ x $` is
+  left as text — and a closing `$` followed by a digit is read as money, so
+  prices like `$5 to $10` are safe. Inside a code span nothing is typeset.
 - `<!-- ... -->` comments out a block, including across multiple lines.
 - `[^1]` footnotes collect into a References section at the end of the page.
