@@ -8,11 +8,13 @@ import { getHighlighter, highlightCode } from "@/lib/highlight";
 
 const referenceAccentColor = "#036FFF";
 
-// code span | footnote marker | [text](url) | bare url | **bold** | *italic*
+// code span | $inline math$ | footnote marker | [text](url) | bare url | **bold** | *italic*
 // The emphasis markers are fenced by non-word lookaround so arithmetic in prose
 // ("2*M*N*K") is left alone; only a * that opens or closes a word counts.
+// Inline math needs its $ to hug the expression on both sides, and a closing $
+// followed by a digit is money rather than math, so "$5 to $10" is left alone.
 const inlineTokenPattern =
-  /(`[^`]+`)|\[\^(\d+)\]|\[([^\]]+)\]\(([^)\s]+)\)|(https?:\/\/[^\s)]+)|(?<![A-Za-z0-9])\*\*([^*\s](?:[^*]*[^*\s])?)\*\*(?![A-Za-z0-9])|(?<![A-Za-z0-9])\*([^*\s](?:[^*]*[^*\s])?)\*(?![A-Za-z0-9])/g;
+  /(`[^`]+`)|\$(?!\s)([^$\n]+?)(?<!\s)\$(?!\d)|\[\^(\d+)\]|\[([^\]]+)\]\(([^)\s]+)\)|(https?:\/\/[^\s)]+)|(?<![A-Za-z0-9])\*\*([^*\s](?:[^*]*[^*\s])?)\*\*(?![A-Za-z0-9])|(?<![A-Za-z0-9])\*([^*\s](?:[^*]*[^*\s])?)\*(?![A-Za-z0-9])/g;
 
 function renderInlineMarkdown(text: string) {
   const nodes: ReactNode[] = [];
@@ -27,8 +29,8 @@ function renderInlineMarkdown(text: string) {
       );
     }
 
-    const [token, codeSpan, refNumber, linkText, linkHref, bareUrl, boldText, italicText] =
-      match;
+    const [token, codeSpan, mathSource, refNumber, linkText, linkHref, bareUrl, boldText,
+      italicText] = match;
 
     if (codeSpan) {
       nodes.push(
@@ -40,6 +42,13 @@ function renderInlineMarkdown(text: string) {
         >
           {codeSpan.slice(1, -1)}
         </code>
+      );
+    } else if (mathSource) {
+      nodes.push(
+        <span
+          key={`math-${match.index}`}
+          dangerouslySetInnerHTML={{ __html: renderMath(mathSource, false) }}
+        />
       );
     } else if (refNumber) {
       nodes.push(
@@ -115,12 +124,13 @@ const figureSizes = {
   full: "w-full max-h-none max-w-full",
 } as const;
 
-// ```latex fences are typeset as display math rather than shown as code.
+// ```latex fences are typeset as display math rather than shown as code, and
+// $...$ spans are typeset inline in the run of the sentence.
 const mathLanguages = new Set(["latex", "tex", "math"]);
 
-function renderMath(source: string) {
+function renderMath(source: string, displayMode = true) {
   return katex.renderToString(source.trim(), {
-    displayMode: true,
+    displayMode,
     // Render the error inline instead of failing the whole page build.
     throwOnError: false,
     strict: false,

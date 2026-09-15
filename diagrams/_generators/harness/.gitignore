@@ -1,0 +1,7 @@
+# one-time local setup (see run.sh), not source
+node_modules/
+package-lock.json
+bundle.js
+bundle2.js
+page.html
+validate.html

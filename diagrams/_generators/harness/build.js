@@ -34,9 +34,13 @@ const OUTDIR = process.env.PREVIEW_DIR || "/tmp/claude-1000/-home-maxxfuu-Applic
 
   for (const f of files) {
     const scene = JSON.parse(fs.readFileSync(f, "utf8"));
-    const byId = Object.fromEntries(scene.elements.map(e => [e.id, e]));
+    // A scene edited by hand in the app keeps its deleted elements around with
+    // isDeleted set. They are not part of the drawing, so they are neither
+    // measured nor exported.
+    const elements = scene.elements.filter(e => !e.isDeleted);
+    const byId = Object.fromEntries(elements.map(e => [e.id, e]));
 
-    const texts = scene.elements.filter(e => e.type === "text");
+    const texts = elements.filter(e => e.type === "text");
     const dims = await page.evaluate(
       ts => ts.map(t => window.__measure(t.text, t.fontSize, t.fontFamily, t.lineHeight)),
       texts.map(t => ({ text: t.text, fontSize: t.fontSize, fontFamily: t.fontFamily, lineHeight: t.lineHeight }))
@@ -69,7 +73,7 @@ const OUTDIR = process.env.PREVIEW_DIR || "/tmp/claude-1000/-home-maxxfuu-Applic
 
     const dataUrl = await page.evaluate(async (scene) => {
       const blob = await window.__exportToBlob({
-        elements: scene.elements, files: scene.files || {},
+        elements: scene.elements.filter(e => !e.isDeleted), files: scene.files || {},
         appState: { ...(scene.appState || {}), exportBackground: true,
                     viewBackgroundColor: "#ffffff", exportPadding: 12 },
         mimeType: "image/png", quality: 1,
