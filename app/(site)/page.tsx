@@ -32,13 +32,13 @@ export default function Page() {
               <HoverCardContent>
                 <p className="font-semibold">Achievements and interests:</p>
                 <ul>
-                  <li>- Kernel Engineering</li>
-                  <li>- Cooking</li>
+                  <li>- Inference Engineering</li>
+                  <li>- Running</li>
                   <li>- Powerlifting</li>
-                  <li>- Cardistry</li>
-                  <li>- Animation Design</li>
                   <li>- Reading</li>
                   <li>- Writing</li>
+                  <li>- Cooking</li>
+                  <li>- Cardistry</li>
                   <li>- Filming</li>
                   <li>- Golfing</li>
                 </ul>
@@ -48,7 +48,7 @@ export default function Page() {
             them.
           </p>
           <p>
-            Lately, that obsession has pulled me deep into CUDA and kernel
+            Lately, that obsession has pulled me deep into CUDA and inference 
             engineering, model performance, inference infrastructure,
             and everything in between. I&apos;m learning as much as I can, as
             fast as I can, and I&apos;d love to connect with anyone further

@@ -18,12 +18,11 @@ To clarify, the self-attention mechanism is a mathematical mechanism that simula
 
 ### Tokenization
 
-Diving into a Language model, when a input prompt is given it generates an output response. The main driving question that we are trying to answer throughout this article is how does a model make sense of the input text, and what is the underlying mechanism that powers it all?
+Diving into a Language model, when a input prompt is given it generates an output response. The main driving question that we are trying to answer throughout this article is how does a model make sense of the input text. More precisely, what is the underlying mechanism that makes Transformers so effective at gereneating coherent texts?
 
-The first step starts with breaking down the input text into smaller pieces called tokens. Each piece usually represents a word; but within the context of LLM each piece is referred to as a token. Each token is assigned with an integer value based on a dictionary. So far each token is assigned with a unique ID, however, each token does not capture the semantic meaning of the word that it represents.
+The first step starts with breaking down the input text into smaller pieces called tokens. Each token represents the smallest unit of text thats processed by the language model. After breaking down the text into tokens, each token is assigned with an integer value based on a dictionary that associates a integer value to a unqiue text. So far, each token is assigned with a unique ID, however each token does not capture the semantic meaning of the word that it represents.
 
 ![Tokenization on input text](/images/attention/tokenization.png)
-
 
 ### Token Embedding 
 
