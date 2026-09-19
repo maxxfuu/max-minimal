@@ -26,13 +26,11 @@ The first step starts with breaking down the input text into smaller pieces call
 
 ### Token Embedding 
 
-To embed semantic meaning into a token, we have to create a d-dimensional vector for each token. Tokens with similar meaning will have embeddings that are close to each other within the high-dimensional space.
+To embed semantic meaning into a token, we have to create a d-dimensional vector for each token. A high-dimensional vectors allows each token to eventually capture the rich meaning associated to each token. Tokens with similar meaning will eventually have embeddings that are close to each other within the high-dimensional space. 
 
-Now that each token can be expressed with its corresponding semantic meaning, it still lacks the ability to change its semantic meaning based on the context.
+![Token Embedding](/images/attention/token-embedding.png "full")
 
-For example, “There are so many bats I can choose at the baseball store.” and “I love to study bats that lives inside a cave.”
-
-The word bats can mean different things based on the context the word is presented in. This is where the attention mechanism comes in.
+Now that we have established how each token can be expressed with its corresponding semantic meaning, it still lacks the ability to change its semantic meaning based on the context. For example, “There are so many bats I can choose at the baseball store.” and “I love to study bats that lives inside a cave.” The word bats can mean different things based on the context the word is presented in. This is where the attention mechanism comes in.
 
 ### Attention Mechanism
 
@@ -56,12 +54,5 @@ If token i were to pay the same amount of attention to j, just as j would pay th
 
 By calculating the dot-product between the embedded vectors and the weight matrices, we can get the similarity scores between the two and find asymmetric attention between each tokens, thus providing richer context within the input text.
 
-
-
-
-
-
-
-![Token Embedding](/images/attention/token-embedding.png "full")
 
 [^1]: [Attention Is All You Need - Vaswani et al., 2017](https://arxiv.org/pdf/1706.03762)
