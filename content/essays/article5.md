@@ -47,6 +47,8 @@ Each matrices have different roles:
 
 > Typically, the model would process batches instead of a single embedded vector at a time. Therefore you would stack embedded vectors into matrices and pass it through the Query and Key matrices.
 
+![Embedded vectors stacked into the input matrix X, one row per token.](/images/attention/input-matrix.png "large")
+
 The next mechanical step within the attention-mechanism it to mulitply the input matrix X, comprised of embedded vectors, against the weight matrices. It projects the input X into weight matricies $W_Q$, $W_K$, $W_V$ which results in the outputs matricies $Q$, $K$, $V$. 
 
 This begs the question, what is the purpose of this operation if the projections is just a linear transformation. To answer this, the purpose of the linear projections is not to make the output tokens more complex, but instead, re-express them into a learned space thats specialized for different role in attention. 
