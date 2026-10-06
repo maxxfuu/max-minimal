@@ -132,6 +132,8 @@ Lastly, $X'$ is then passed through a feed forward network consists of two linea
 
 The single-head attention with a single query, key, and value matrix has one issue, it just isn't enough to capture the complex relationships between tokens. To address this, we have multiple sets of the query, key, and value matrices. This enables the model to "learn and represent diverse types of relationships between tokens"[^2]. This is achieved by extending the dimensions of the $Q$, $K$, $V$, and its respective weights by introducing a new variable h. $h$ represents the number of heads. To further capture all of the information, the paper would extend the model even further by adding layers such that there are multiple layers of multi-head attention. In the diagram we will show 4 heads and 3 layers, but in the "Attention is all you need paper" note that there were 8 heads and 6 layers within the transformer architecture.
 
+![Multi-head attention: one layer holds h heads, each running single-head attention on a d/h slice of X, concatenated and mixed by W_O; N such layers are stacked.](/images/attention/multi-head.png "full")
+
 ```latex
 \operatorname{MultiHead}(X) = \operatorname{Concat}\left(\text{head}_1, \dots, \text{head}_h\right) W_O, \qquad \text{head}_i = \operatorname{Attention}\left(X W_Q^{(i)},\ X W_K^{(i)},\ X W_V^{(i)}\right)
 ```
@@ -144,7 +146,12 @@ The single-head attention with a single query, key, and value matrix has one iss
 X^{(\ell)} = \operatorname{Layer}\left(X^{(\ell-1)}\right), \qquad \ell = 1, \dots, N
 ```
 
-![Multi-head attention: one layer holds h heads, each running single-head attention on a d/h slice of X, concatenated and mixed by W_O; N such layers are stacked.](/images/attention/multi-head.png "full")
+Within each layer, the multihead attention will generate an output matrix across all heads with the same dimensions. We then add all the output matrices side by side in the same layer. Now within each layer, it takes the output of $l-1$ as its input. Nothing is concatenated unlike the mutli-head attention. The matrix stays in the same `n` x `d` dimension the whole as the output matrices passes through each layer. 
+
+As the matrix flows through the transformer architecture, it'll eventually reach an end where the model is now ready to form a prediction. A prediciton is made by one more linear layer that multiplies an embedding projhect matrix $W_vocab$ to map hidden features into unformalized log-probabilities across the entire vocabulary, and then feed it into one more softmax to convert the vocabulary logits into actual probabilities. In the original paper this matrix is not a new set of weights, it is the transpose of the token-embedding matrix from the start of the model, $W_{vocab} = E^{T}$, so the logit for each word is the dot product between the final hidden row and that word's embedding.
+
+![The last row of X^(N) times W_vocab gives logits over the vocabulary; a softmax turns them into next-token probabilities.](/images/attention/next-token.png "large")
+
 
 [^1]: [Attention Is All You Need - Vaswani et al., 2017](https://arxiv.org/pdf/1706.03762)
 [^2]: [How Attention Got So Efficient](https://www.youtube.com/watch?v=Y-o545eYjXM&t=182s)
