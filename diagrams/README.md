@@ -22,7 +22,7 @@ export pipeline and comparing against the original.
 | `page6/` | 3 | `page6.md` |
 | `page7/` | 2 | `page7.md` |
 | `page8/` | 1 | `page8.md` |
-| `article5/` | 4 | `article5.md` |
+| `article5/` | 10 | `article5.md` |
 
 Each file is named after the PNG it reproduces, so
 `page2/memory-hierarchy.excalidraw` corresponds to
