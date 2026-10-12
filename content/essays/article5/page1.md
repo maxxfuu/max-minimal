@@ -2,7 +2,7 @@
 title: "To write a CUDA Matmul Kernel That Reaches 97% of cuBLAS Performance"
 date: "2026-08-10"
 
-summary: "Understanding GPU hardware, CUDA's execution and memory models, and progressively optimizing a matmul kernel from naive implementation to 97% of cuBLAS performance."
+summary: "Progressively optimizing a CUDA matmul kernel from a naive implementation to 97% of cuBLAS performance, one bottleneck at a time."
 
 ---
 
@@ -20,25 +20,24 @@ This article teaches you how to optimize a matrix multiplication kernel; it is t
 
 I've previously thought that writing performant CUDA kernels was about coming up with most very clever algorithms to squeeze out all of the performance of a GPU. I was very wrong. While learning how to optimize a the kernel myself, I've noticed the majority of optimization comes from understanding the GPU memory hierachy at the most fundamental level and learning how to feed data into computation units efficiently without wasting any resources.
 
-Its all about the memory hierachy and the movement of data with the CUDA software. The idea is simple, but the execution can be difficult. Within this article, we will iteratively walk through the hardware components of a CUDA architecture all the way to optimizing a CUDA kernel. 
+Its all about the memory hierachy and the movement of data with the CUDA software. The idea is simple, but the execution can be difficult. The hardware components of a CUDA architecture, and the programming model that sits on top of them, are covered in [From CUDA Hardware Architecture To CUDA Kernels](/writings/article4); this article assumes you have read it. Within this article, we will iteratively walk from a naive CUDA kernel all the way to an optimized one. 
 
 Below is the table of contents, feel free to skip around although reading this sequentially is advised. 
 
 ### To write a CUDA Matmul Kernel That Reaches 97% of cuBLAS Performance
-1. [From CUDA Hardware Architecture to CUDA Kernels](/writings/article4/page2)
-2. [The Roofline Model and GEMM](/writings/article4/page3)
-3. [The Naive Kernel: Establishing a Baseline](/writings/article4/page4)
-4. [Global Memory Coalescing](/writings/article4/page5)
-5. [Flattening the Block](/writings/article4/page6)
-6. [Shared Memory Tiling](/writings/article4/page7)
-7. [1D Register Tiling: One Thread, TM Outputs](/writings/article4/page8)
-8. [2D Register Tiling: The Outer Product](/writings/article4/page9)
-9. [Vectorized Memory Access: 128-bit Loads and Stores](/writings/article4/page10)
-10. [Warp Tiling: A Third Level of Tiling](/writings/article4/page11)
-11. [Autotuning: Searching the Tile-Shape Space](/writings/article4/page12)
-12. [Padded Shared Memory: Eliminating Bank Conflicts](/writings/article4/page13)
-13. [Double Buffering: Software Pipelining the K-Loop](/writings/article4/page14)
-14. [The Final Kernel: Retuning Against the Pipeline](/writings/article4/page15)
+1. [The Roofline Model and GEMM](/writings/article5/page2)
+2. [The Naive Kernel: Establishing a Baseline](/writings/article5/page3)
+3. [Global Memory Coalescing](/writings/article5/page4)
+4. [Flattening the Block](/writings/article5/page5)
+5. [Shared Memory Tiling](/writings/article5/page6)
+6. [1D Register Tiling: One Thread, TM Outputs](/writings/article5/page7)
+7. [2D Register Tiling: The Outer Product](/writings/article5/page8)
+8. [Vectorized Memory Access: 128-bit Loads and Stores](/writings/article5/page9)
+9. [Warp Tiling: A Third Level of Tiling](/writings/article5/page10)
+10. [Autotuning: Searching the Tile-Shape Space](/writings/article5/page11)
+11. [Padded Shared Memory: Eliminating Bank Conflicts](/writings/article5/page12)
+12. [Double Buffering: Software Pipelining the K-Loop](/writings/article5/page13)
+13. [The Final Kernel: Retuning Against the Pipeline](/writings/article5/page14)
 
 
 This writing was inspired by blogs such as Simons writing on this exact topic[^1]. Abhik's[^2] and Robert's[^3] on this topic is what cemented these concepts for me. The reset of my knowledge gap was filed with reading PMPP [^4], Modals' GPU Glossary[^5], and a lot of tokens.

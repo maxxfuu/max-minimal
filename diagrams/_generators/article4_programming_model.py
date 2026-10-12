@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exc import *
 
 s = Scene("progmodel")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "page2")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article4")
 
 s.text(10, 8, "CUDA Programming Model: Grid  →  Blocks  →  Threads", size=30)
 s.text(28, 60, "hardware mapping: block  →  SM,   thread  →  CUDA core / lane",

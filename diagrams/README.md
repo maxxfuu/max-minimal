@@ -1,10 +1,10 @@
 # Excalidraw sources for the hand-drawn figures
 
 Editable `.excalidraw` sources for every hand-drawn figure in the essays: the
-GEMM article in `content/essays/article4/`, one directory per page, plus one
+GEMM article in `content/essays/article5/`, one directory per page, plus one
 directory per standalone essay.
 
-The `article5/` scenes were authored here from the start, so the generator is
+The `article6/` scenes were authored here from the start, so the generator is
 the source of truth for them. For the GEMM figures it is the other way round:
 the original scenes were not recoverable — the exported PNGs in
 `public/images/gemm/` carry no embedded scene data, and the local Excalidraw
@@ -16,19 +16,21 @@ export pipeline and comparing against the original.
 
 | directory | figures | referenced by |
 |---|---|---|
-| `page2/` | 9 | `page2.md` |
-| `page3/` | 3 | `page3.md` |
-| `page4/` | 3 | `page4.md` |
-| `page6/` | 3 | `page6.md` |
-| `page7/` | 2 | `page7.md` |
-| `page8/` | 1 | `page8.md` |
-| `article5/` | 10 | `article5.md` |
+| `article4/` | 8 | `article4.md` (the CUDA hardware primer) |
+| `page2/` | 1 | `article5/page2.md` |
+| `page3/` | 3 | `article5/page3.md` |
+| `page4/` | 3 | `article5/page4.md` |
+| `page6/` | 3 | `article5/page6.md` |
+| `page7/` | 2 | `article5/page7.md` |
+| `page8/` | 1 | `article5/page8.md` |
+| `article6/` | 11 | `article6.md` |
 
 Each file is named after the PNG it reproduces, so
-`page2/memory-hierarchy.excalidraw` corresponds to
+`article4/memory-hierarchy.excalidraw` corresponds to
 `public/images/gemm/memory-hierarchy.png`, and
-`article5/tokenization.excalidraw` to
-`public/images/attention/tokenization.png`.
+`article6/tokenization.excalidraw` to
+`public/images/attention/tokenization.png`. The hardware primer was split out
+of the GEMM series, so its figures still live under `public/images/gemm/`.
 
 `page1.md` has no directory: its only image, `kernel-benchmark.png`, is a
 `gnome-screenshot` of terminal output, not an Excalidraw drawing.
@@ -52,7 +54,7 @@ generator and re-running it is usually easier than nudging elements by hand.
 
 ```sh
 cd _generators
-python3 page2_memory_hierarchy.py      # rewrite one scene
+python3 article4_memory_hierarchy.py   # rewrite one scene
 ./build_all.sh                         # rewrite all scenes and re-render previews
 ```
 

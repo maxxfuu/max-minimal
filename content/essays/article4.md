@@ -1,9 +1,15 @@
-## From CUDA Hardware Architecture To CUDA Kernels
+---
+title: "From CUDA Hardware Architecture To CUDA Kernels"
+date: "2026-08-09"
+summary: "The GPU hardware, the CUDA programming model, and the execution model that maps one onto the other. The primer behind the optimized GEMM series."
+---
 
 ## What is CUDA?
 CUDA stands for Compute Unified Device Architecture. Depending on the context, CUDA can refer to NVIDIA's parallel computing platform and programming model, or more broadly to the ecosystem of hardware and software built around it. The CUDA programming model provides an abstraction for CUDA practioners to express massively parallel workloads, while NVIDIA's GPU architectures provide the underlying hardware that executes those workloads.
 
 The key insight is to understand that CUDA is a co-design between the hardware and the software.[^1] Writing good CUDA requires a solid fundamental understanding of the CUDA programming model and how it relates to the GPU hardware architecture.
+
+This article is that fundamental understanding. It is the primer behind [To write a CUDA Matmul Kernel That Reaches 97% of cuBLAS Performance](/writings/article5), and it covers the GPU hardware, the CUDA programming model, and the execution model that maps one onto the other. That is just enough to follow every kernel in that series. If you already know what a warp is and why occupancy is a capacity rather than a result, skip ahead to the kernels.
 
 ## GPU Hardware
 
@@ -26,7 +32,7 @@ Each SM is divided into four execution partitions, which we'll refer to as SM su
 ![One SM of the RTX 5080. Each of the four sub-partitions owns its own warp scheduler and register file. The 128 KB of L1 and shared memory along the bottom is the one resource all four have to share.](/images/gemm/sm-blackwell.png)
 -->
 
-There are additional components within an SM, but the ones listed above are the most important for understanding the performance optimizations we'll make throughout this article.
+There are additional components within an SM, but the ones listed above are the most important for understanding the performance optimizations made throughout the GEMM series.
 
 In knowing this, you should immediately be aware that a CUDA kernel is not executing on "the GPU" operating as a monolithic processor like the CPU. Instead, work is distributed across all of the SMs within the GPU. 
 
@@ -60,7 +66,7 @@ This responsibility is on the warp scheduler, but it starts with the **GigaThrea
 
 Once a block is assigned to a SM by the GigaThread Engine, the threads within the whole block is divided into groups of 32 threads called a warp. At this point, know that the GigaThread engine determines which SM execuates a block, and the warp scheduler determines which warp executes an instruction next. 
 
-As stated earlier in this chapter, each SM contains 4 sub-partitions, and each sub-partition contains one **warp scheduler**. So during each clock cycle, the warp scheduler selects an eligble warp and issues its next instructions to the execution units available to a sub-partition.   
+As stated earlier, each SM contains 4 sub-partitions, and each sub-partition contains one **warp scheduler**. So during each clock cycle, the warp scheduler selects an eligble warp and issues its next instructions to the execution units available to a sub-partition.   
 
 We will cover more detail when we introduce the CUDA execution model later.
 
@@ -117,7 +123,7 @@ The GPU stores the thread state on the physical silicon while a block is active 
 
 You never declare a warp anywhere in your code. The hardware forms them for you by walking the block's threads in linear order - `threadIdx.x` first, then `y`, then `z` - and cutting every 32. Threads 0 through 31 become warp 0, threads 32 through 63 become warp 1, and so on down the block.
 
-Which also means a block whose size is not a multiple of 32 still pays for whole warps. Launch 1000 threads and you do not get 31.25 warps, you get 32, and the last one runs with 8 lanes doing work and 24 doing nothing at all. This is the first place the number 32 shows up in this article, and it is why the block dimensions in real kernels are almost always a multiple of it.
+Which also means a block whose size is not a multiple of 32 still pays for whole warps. Launch 1000 threads and you do not get 31.25 warps, you get 32, and the last one runs with 8 lanes doing work and 24 doing nothing at all. This is the first place the number 32 shows up, and it is why the block dimensions in real kernels are almost always a multiple of it.
 
 When a block arrives at an SM, the SM splits it into warps and schedules those. A warp issues one instruction at a time on behalf of all 32 of its threads, so they advance in lockstep. When a branch sends them different ways, the warp walks each path in turn with the threads that took the other path switched off, so the two paths are serialized rather than run in parallel. This is why divergence inside a warp costs real time, and why it costs nothing when an entire warp takes the same branch.
 
@@ -125,7 +131,7 @@ When a block arrives at an SM, the SM splits it into warps and schedules those. 
 
 The qualifier that matters here is *inside a warp*. Divergence is a warp-level cost, not a program-level one. If warp 0 takes the if-path and warp 1 takes the else-path, nothing is serialized - they are separate scheduling units, and each one runs its own branch at full width. The expensive case is only when the condition comes out differently across the 32 lanes of a single warp.
 
-That distinction is worth carrying into the kernel we are about to write. A bounds guard like `if (row < M && col < N)` looks like a branch sitting on every thread, but when the matrix dimensions are multiples of the block size, every lane in a warp evaluates it identically and it costs a comparison and nothing more. Only the warps hanging off the edge of the matrix actually diverge, and there are very few of those.
+That distinction is worth carrying into the first kernel of the GEMM series. A bounds guard like `if (row < M && col < N)` looks like a branch sitting on every thread, but when the matrix dimensions are multiples of the block size, every lane in a warp evaluates it identically and it costs a comparison and nothing more. Only the warps hanging off the edge of the matrix actually diverge, and there are very few of those.
 
 The other half of the model is latency hiding. Many warps sit resident on an SM at once, and the warp scheduler issues each cycle from whichever ones are ready. When one warp stalls waiting on a global memory load, the scheduler simply issues from another. A CPU spends enormous transistor budget on caches and out-of-order execution to avoid stalling; a GPU accepts the stall and keeps enough warps in flight that something is always runnable.
 
@@ -135,11 +141,11 @@ The scale is what makes this work at all. A load that misses every cache and goe
 
 And switching between them is free, which is the part worth sitting with. A CPU context switch has to save and restore registers, so it costs real time. A GPU never does that, because every resident warp already owns its registers in the register file for as long as it lives on the SM. The scheduler picks a different warp and issues on the next cycle. That is why the register file is so enormous, and it is also why asking for too many registers per thread hurts you - it does not make any individual thread slower, it means fewer warps fit on the SM, and warps are the only mechanism you have for covering memory latency.
 
-How many warps can be resident on an SM at once is not a number you choose - it falls out of what each block asks for. Registers per thread come out of that SM's register file, shared memory per block comes out of that SM's shared memory, and no block may exceed 1024 threads. Ask for more of any one of them and fewer blocks, and so fewer warps, fit. This ratio - how many warps are resident relative to the maximum the SM could hold - is what's called **occupancy**. Note what that does and does not tell you. It is the *capacity* to hide latency, not proof that you are hiding any - which is why chasing occupancy on its own is not the same thing as chasing performance.[^4] We will run into that distinction directly once register pressure starts costing us residency.
+How many warps can be resident on an SM at once is not a number you choose - it falls out of what each block asks for. Registers per thread come out of that SM's register file, shared memory per block comes out of that SM's shared memory, and no block may exceed 1024 threads. Ask for more of any one of them and fewer blocks, and so fewer warps, fit. This ratio - how many warps are resident relative to the maximum the SM could hold - is what's called **occupancy**. Note what that does and does not tell you. It is the *capacity* to hide latency, not proof that you are hiding any - which is why chasing occupancy on its own is not the same thing as chasing performance.[^4] The GEMM series runs into that distinction directly once register pressure starts costing residency.
 
-Nearly every optimization in this article follows from the warp. Coalescing is about what one warp's 32 addresses look like to the memory system, bank conflicts are about what they look like to shared memory, and tiling is about giving each warp enough arithmetic to chew on while other warps wait.
+Nearly every optimization in the GEMM series follows from the warp. Coalescing is about what one warp's 32 addresses look like to the memory system, bank conflicts are about what they look like to shared memory, and tiling is about giving each warp enough arithmetic to chew on while other warps wait.
 
-This section of the article covers the most bare-bones aspects of CUDA programming and CUDA hardware architecture. It should be just enough to follow every kernel that comes after it. However, if you want to dive deeper into what happens when you run a CUDA kernel, check out Fergus Finn's blog.[^5]
+This article covers the most bare-bones aspects of CUDA programming and CUDA hardware architecture. It should be just enough to follow every kernel in [the GEMM series](/writings/article5), which picks up from here with [the roofline model](/writings/article5/page2) and a naive kernel. However, if you want to dive deeper into what happens when you run a CUDA kernel, check out Fergus Finn's blog.[^5]
 
 [^1]: [How CUDA Programming Works - Stephen Jones, CUDA Architect](https://www.youtube.com/watch?v=QQceTDjA4f4&t=75s)
 [^2]: [NVIDIA RTX Blackwell GPU Architecture](https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf)

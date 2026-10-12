@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exc import *
 
 s = Scene("tokenize")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article5")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article6")
 
 s.text(410, 8, "Tokenization: text becomes a list of integers", size=17, anchor="center")
 

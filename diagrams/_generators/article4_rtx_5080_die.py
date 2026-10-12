@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exc import *
 
 s = Scene("gb203die")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "page2")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article4")
 
 GPC_BG, GPC_ST = "#f1f7fe", "#4dabf7"
 TPC_BG, TPC_ST = "#e7f5ff", "#a5d8ff"

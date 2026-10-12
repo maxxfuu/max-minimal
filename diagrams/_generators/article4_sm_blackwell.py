@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exc import *
 
 s = Scene("smblack")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "page2")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article4")
 
 S = 2.0                      # scene units per pixel of the reference export
 def k(v): return v * S

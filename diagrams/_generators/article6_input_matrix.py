@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exc import *
 
 s = Scene("inputmatrix")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article5")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article6")
 
 
 # ------------------------------------------------ the input matrix: one row per token

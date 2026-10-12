@@ -31,4 +31,4 @@ for i, (scope, level, cost, stroke, bg, ctext) in enumerate(ROWS):
     s.text(753, cy, cost, size=16, color=ctext, valign="middle")
 
 s.save(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                    "page2", "memory-hierarchy.excalidraw"))
+                    "article4", "memory-hierarchy.excalidraw"))

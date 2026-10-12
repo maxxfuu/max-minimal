@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exc import *
 
 s = Scene("blockwarps")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "page2")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article4")
 
 s.text(10, 8, "Block Splits Into Warps", size=26)
 s.text(10, 44, "thread block: 1024 threads", size=13, color=GRAY)

@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from exc import *
 
 s = Scene("tokenembed")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article5")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "article6")
 
 s.text(300, 8, "Token embedding: an ID becomes a d-dimensional vector", size=17, anchor="center")
 
