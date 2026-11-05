@@ -23,6 +23,12 @@ export pipeline and comparing against the original.
 | `page6/` | 3 | `article5/page6.md` |
 | `page7/` | 2 | `article5/page7.md` |
 | `page8/` | 1 | `article5/page8.md` |
+| `page9/` | 1 | `article5/page9.md` |
+| `page10/` | 1 | `article5/page10.md` |
+| `page11/` | 1 | `article5/page11.md` |
+| `page12/` | 2 | `article5/page12.md` |
+| `page13/` | 1 | `article5/page13.md` |
+| `page14/` | 1 | `article5/page14.md` |
 | `article6/` | 11 | `article6.md` |
 
 Each file is named after the PNG it reproduces, so

@@ -26,7 +26,7 @@ AI_{\text{ridge}} =
 \approx 58.6\text{ FLOP/byte}
 ```
 
-![The roofline for the RTX 5080, with arithmetic intensity in FLOP per byte on the x axis and attainable performance in TFLOP/s on the y axis, both log scale. The sloped line rises at 960 GB/s until it meets the flat 56.3 TFLOP/s ceiling at the ridge point of 58.6 FLOP/byte. Everything left of the ridge is the memory bound region, where DRAM is the limit and extra FLOPs are free, and the way out is to raise intensity by reusing data through shared memory and register tiling. Everything right of it is the compute bound region, where the SMs are the limit and only more FLOP/s helps.](/images/gemm/roofline-model.png "full")
+![The RTX 5080 roofline, attainable TFLOP/s against arithmetic intensity, with the 960 GB/s slope meeting the 56.3 TFLOP/s ceiling at the ridge point of 58.6 FLOP/byte.](/images/gemm/roofline-model.png "full")
 
 So on this card a kernel has to perform roughly 59 floating point operations for every byte it pulls from VRAM just to keep the arithmetic units fed. Put in terms of the FP32 numbers we are actually multiplying, that is about 234 operations for every 4 byte float loaded. A kernel below that intensity is **memory bound** and its ceiling is the sloped one; a kernel above it is **compute bound** and its ceiling is flat. Note that intensity is a property of the kernel and the ridge point is a property of the card, which means the ridge point is fixed and the only thing we get to move is the kernel.
 

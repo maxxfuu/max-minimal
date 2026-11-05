@@ -17,6 +17,8 @@ Residency has been papering over this. With 5 blocks per SM, one block stalling 
 
 The direct fix is to overlap the two phases within a single block. Keep two tiles in shared memory instead of one. Compute on tile `n` while the loads for tile `n + 1` are already in flight, then swap. The loads still cost what they cost; they just happen underneath the arithmetic instead of in front of it.
 
+![Kernel 10 alternates load and compute with two barriers per tile, while kernel 11 loads tile n + 1 underneath compute n with one barrier per tile.](/images/gemm/double-buffer-timeline.png "full")
+
 ### Two Stages, One Barrier
 
 Doubling the buffers is what makes the barrier count fall, and the reason is worth stating precisely, because it is the entire correctness argument for the kernel.

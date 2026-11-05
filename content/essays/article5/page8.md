@@ -6,7 +6,7 @@ Give the thread a rectangle instead. If a thread owns a `TM x TN` patch of C, th
 
 That is an outer product. The thread loads a short column vector from `As` and a short row vector from `Bs`, forms every pairwise product between them, and accumulates the whole `TM x TN` grid at once. At `TM = TN = 8` that is 16 loads feeding 64 FMAs, four FMAs per load, against kernel 5's 9 loads feeding 8.
 
-![The block owns a 128 x 128 tile of C divided into 256 patches, one per thread, with As held as 128 x 8 and Bs as 8 x 128. One thread owns an 8 x 8 patch, fed by the 8 rows of A and 8 columns of B that intersect at it. The inset compares the two shapes directly: kernel 5's TM x 1 column takes 1 + TM = 9 loads to feed 8 FMAs, which is 0.9 FMAs per load, while kernel 6's TM x TN patch takes TM + TN = 16 loads to feed 64 FMAs, which is 4 FMAs per load.](/images/gemm/register-2d-patch.png "full")
+![One thread owns an 8 x 8 patch of the 128 x 128 block tile, fed by 8 rows of A and 8 columns of B, so 16 loads feed 64 FMAs against kernel 5's 9 loads for 8.](/images/gemm/register-2d-patch.png "full")
 
 The ratio is `(TM + TN) / (TM x TN)`, which falls as the patch grows, and that is the first place in this series where a knob exists that keeps paying. It is also the first knob with a real price, and the price is registers: those `TM x TN` accumulators live in registers for the entire lifetime of the kernel.
 

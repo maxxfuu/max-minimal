@@ -10,7 +10,9 @@ summary: "Progressively optimizing a CUDA matmul kernel from a naive implementat
 
 In this article, I will walk you through how to write a CUDA matrix multiplication naive kernel and optimizing it to reach ~97% of SGEMM cuBLAS kernel. 
 
-![Every kernel in this article, benchmarked on an RTX 5080 at M=N=K=4096, alpha=1 and beta=0. Each row is the median of 7 trials of 5 reps after a 300 ms warm-up, with the run-to-run spread and the max relative error against cuBLAS alongside it. The ladder runs from the naive kernel at 410.5 GFLOP/s and 1.1% of cuBLAS up to the final tuned kernel at 34978.3 GFLOP/s and 97.1%. cuBLAS was re-timed after the sweep and drifted 0.13%, so the percentage column is sound.](/images/gemm/kernel-benchmark.png "full")
+Note what that 97% is measured against. The reference is `cublasSgemm` in its default math mode, which runs FP32 on the CUDA cores and does not use the tensor cores. cuBLAS can also run this product on the tensor cores in TF32 or in FP16 with FP32 accumulation, and on this card those paths reach roughly 60 and 113 TFLOP/s against 36 TFLOP/s for FP32. None of the kernels in this article use them. So the comparison is CUDA cores against CUDA cores, at `M = N = K = 4096` with `alpha = 1` and `beta = 0`, and the percentage moves with the size. 
+
+![Every kernel benchmarked on an RTX 5080 at M = N = K = 4096, alpha = 1 and beta = 0.](/images/gemm/kernel-benchmark.png "full")
 
 Learning CUDA has been an incredible and exciting journey. While learning CUDA has become easier over the past few years, most resources remain difficult to digest. 
 
@@ -38,7 +40,6 @@ Below is the table of contents, feel free to skip around although reading this s
 11. [Padded Shared Memory: Eliminating Bank Conflicts](/writings/article5/page12)
 12. [Double Buffering: Software Pipelining the K-Loop](/writings/article5/page13)
 13. [The Final Kernel: Retuning Against the Pipeline](/writings/article5/page14)
-
 
 This writing was inspired by blogs such as Simons writing on this exact topic[^1]. Abhik's[^2] and Robert's[^3] on this topic is what cemented these concepts for me. The reset of my knowledge gap was filed with reading PMPP [^4], Modals' GPU Glossary[^5], and a lot of tokens.
 

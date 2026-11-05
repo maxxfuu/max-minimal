@@ -23,6 +23,8 @@ Widening the thread tile from `4 x 4` to `16 x 4` and doubling `BN` back to 128 
 
 And because `TM = 16` reads 16 *contiguous* floats out of the transposed `As`, that side of the load is four `LDS.128` rather than sixteen `LDS.32`. The inner loop ends up issuing six vector shared memory loads to feed 128 FMAs.
 
+![Per dotIdx, kernel 11 loads 8 + 8 values to feed 64 accumulators, 4.0 FMAs per load, and kernel 12 loads 16 + 8 to feed 128, 5.3 FMAs per load.](/images/gemm/thread-tile-retune.png "large")
+
 ### The Padding Has To Go
 
 The same widening un-does the previous section. The bank conflict on the transposed store is still real, and the derivation in that section is still correct: `BM = 128` is a multiple of 32, the column term drops out of the bank index, and a warp's stores land on 8 banks.
@@ -156,6 +158,8 @@ void launch_sgemm_final(int M, int N, int K, float alpha, const float *A,
 3. **The block is still 128 threads, and the grid is now `32 x 32`.** That is 1024 blocks over 84 SMs, about 12 waves deep. Small grids are where scheduling effects and tail effects show up, and this is the point at which block rasterization schemes start being suggested. It was tried here and did nothing, because at 12 waves L2 already captures the reuse those schemes are designed to create.
 
 Kernel 12 runs in **3.929 ms at 34978.3 GFLOP/s, which is 97.1% of cuBLAS at `M = N = K = 4096`**, up from 4.281 ms and 89.2%. That is 9.0% faster than the double buffered kernel and 85 times faster than the naive one.
+
+The 97.1% carries two conditions. The reference is `cublasSgemm` on FP32 CUDA cores, not one of cuBLAS's tensor core paths; against TF32 or FP16 the same kernel would sit at roughly 58% and 31%, and the closing section says why that is not the comparison this article makes. And the benchmark runs at `beta = 0`, which is where this kernel takes the epilogue that skips the read of C.
 
 ### Where The Points Came From
 

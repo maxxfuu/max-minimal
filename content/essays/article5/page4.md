@@ -10,13 +10,13 @@ With matrix A, we can conclude that each thread fetching 32 bytes from the VRAM 
 
 Changing the global thread index between the row and col would change how A is accessed. Instead of 32 threads accessing 32 separate rows, all 32 threads will access the same row and same element within a single lockstep. As a result, the hardware serves that one address out of a single sector and broadcasts the value to all 32 lanes/registers. 
 
-![Left: the naive mapping puts threadIdx.x on row, so a warp's 32 lanes land on 32 different rows of A, each K·4 bytes apart in memory - nothing to merge into one transaction. Right: swapping the mapping puts threadIdx.x on col, so all 32 lanes sit on the same row of A and their accesses collapse into a single 128 B segment instead of 32 scattered ones.](/images/gemm/coalescing-access-pattern.png "large")
+![Putting threadIdx.x on the row scatters a warp across 32 rows of A, and putting it on the column collapses the same loads into one 128 B segment.](/images/gemm/coalescing-access-pattern.png "large")
 
 Matrix B behaves differently with the naive kernel implementation. Initially, the `col` variable is assigned with `threadIdx.y`, which is a constant value across all 32 threads within a warp. What differs across the lanes is row variable with the `threadIdx.x`. Every lane computes the same column element and asks for the same address. The hardware loads one 32 byte sector, uses 4 bytes of it and broadcasts that single float to all 32 registers. Each iteration the threads step down one row on the same column.
 
 With the coalesced kernel for matrix B, all 32 threads read the same row of B during a single lockstep, one thread per adjacent column. Because matrix B is stored in row-major order, those adjacent cells sit sequentially in physical memory. The hardware packs the 128 bytes into 4 consecutive 32 byte sectors. This makes a perfectly coalesced access when matrix B access a whole row. 
 
-![Left: the naive mapping takes col from threadIdx.y, so all 32 lanes of a warp resolve to the same column of B - one address, one 32 B sector loaded, 4 B of it used and the rest of the warp served by broadcast, and each k step walks one row down that same column. Right: taking col from threadIdx.x puts the 32 lanes on 32 adjacent columns of row k - 128 contiguous bytes packed into 4 x 32 B sectors with every byte used, and the whole warp drops one row per k step.](/images/gemm/coalescing-matrix-b.png "large")
+![With col from threadIdx.y a warp hits one column of B and one 32 B sector per k step, and with col from threadIdx.x it hits 32 adjacent columns, 128 contiguous bytes in 4 sectors.](/images/gemm/coalescing-matrix-b.png "large")
 
 ### The Kernel
 
@@ -68,7 +68,7 @@ Naive, each lane claims its own 32 byte sector for a single 4 byte value: 32 sec
      on kernels 1 and 2. Sectors per request should read ~32 for the naive kernel
      and 4 for this one. Counters are admin only on this box right now. -->
 
-![Naive: one 32 B sector per lane, 1 of 8 slots used. 32 sectors x 32 B = 1024 B moved, only 128 B used, 12.5% efficiency. Coalesced: one 32 B sector per 8 lanes, all 8 slots used. 4 sectors x 32 B = 128 B moved, all 128 B used, 100% efficiency.](/images/gemm/sector-utilization.png "large")
+![Naive moves 32 sectors to use 128 B, 12.5% efficiency, and coalesced moves 4 sectors for the same 128 B, 100%.](/images/gemm/sector-utilization.png "large")
 
 ### What Could Be Improved
 

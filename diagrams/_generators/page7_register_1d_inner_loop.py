@@ -32,10 +32,10 @@ s.arrow([(590, 120), (636, 120)], stroke=CY_ST, sw=2)
 
 s.text(664, 64, "broadcast: 1 value,\nreused TM times", size=12, color=VIOLET)
 b = s.rect(640, 100, 152, 42, stroke=VIOLET, sw=2)
-s.label(b, "Btmp  (register)", size=14, color=VIOLET)
+s.label(b, "regN  (register)", size=14, color=VIOLET)
 s.arrow([(716, 148), (716, 192)], stroke=VIOLET, sw=2)
 
-s.text(214, 172, "TM = 8 fused multiply-adds:   acc[i] += As[i] × Btmp", size=14)
+s.text(214, 172, "TM = 8 fused multiply-adds:   acc[i] += As[i] × regN", size=14)
 
 # ------------------------------------------------------- the accumulators
 AX, AY, AW, AH, PITCH = 644.0, 200.0, 148.0, 19.0, 21.0

@@ -2,7 +2,7 @@
 
 For the first kernel, we are really just trying to express GEMM in CUDA. We'll start off assigning the threads to each output cell within the output matrix C. Start by expressing each thread with its respective global thread indices: 
 
-![Each thread computes one element of C, labelled here by the cell it owns as t[row][col]. Thread t[0][0] takes the top-left corner, and stepping one cell right or one cell down moves you exactly one column or one row through the output.](/images/gemm/matrix-c-indexing.png)
+![Each thread computes one element of C, labelled by the cell it owns as t[row][col].](/images/gemm/matrix-c-indexing.png)
 
 ``` cuda 
 const int BLOCKSIZE = 32;
@@ -40,7 +40,7 @@ __global__ void sgemm_naive(int M, int N, int K, float alpha, const float *A, co
 
 To visualize this naive kernel:
 
-![Two neighbouring threads and the memory each one touches. Both walk the full K dimension, thread 0 reading row 0 of A against column 0 of B, thread 1 reading row 1 against the same column, to produce one element of C each.](/images/gemm/naive-access-pattern.png "large")
+![Two neighbouring threads, each walking a full row of A against the same column of B to produce one element of C.](/images/gemm/naive-access-pattern.png "large")
 
 To launch this kernel, we map `blockIdx.x` and `threadIdx.x` to col and `blockIdx.y` and `threadIdx.y` to row, so the `gridDim.x` walks along the `N` dimension and `gridDim.y` walks along the `M` dimension. For M = N = 4096 with BLOCKSIZE = 32, that's gridDim = (128, 128, 1) and blockDim = (32, 32, 1), or 16,384 blocks of 1024 threads, one warp with 32 thread, 1 thread per output element.
 
@@ -67,7 +67,7 @@ The CUDA hardware performs thread linearization when forming the warps within th
 
 `CEIL_DIV` is ceiling division, and it exists because the matrix dimensions are not required to be multiples of the block size, so we round the grid up and let the last blocks hang over the "edge". This is also why we have to have the boundary check in place; the `if (row < M && col < N)` guard inside the kernel prevents out-of-bounds threads from accessing garbage memory. In our kernel implementation, `M = N = K = 4096` with `BLOCKSIZE = 32` makes the division exact, but writing the kernel as though it isn't costs one comparison and further prevents bugs related to boundedness.
 
-Running this kernel at M = N = K = 4096 takes **334.8 ms**, which works out to **410.5 GFLOP/s**. This will be our first baseline that we will try to optimize against cuBLAS's `cublasSgemm` implementation. Note that the cuBLAS implementation computes the same product in 3.817 ms at 36,011 GFLOP/s. This puts our FP32 SGEMM naive kernel **performance at 1.1%** of cuBLAS.
+Running this kernel at M = N = K = 4096 takes **334.8 ms**, which works out to **410.5 GFLOP/s**. This will be our first baseline that we will try to optimize against cuBLAS's `cublasSgemm` implementation. Note that the cuBLAS implementation computes the same product in 3.817 ms at 36,011 GFLOP/s. This is `cublasSgemm` in its default math mode, so it runs FP32 on the CUDA cores and does not touch the tensor cores. Every kernel in this article runs on the same units, which is what makes the percentage a fair one. This puts our FP32 SGEMM naive kernel **performance at 1.1%** of cuBLAS.
 
 ### Arithmetic Analysis
 
@@ -173,7 +173,7 @@ C[row * N + col]   load    32 addresses, 4096 floats apart   -> 32 sectors
 
 C shows up twice because `beta * C[row * N + col]` has to read the old value back before the assignment overwrites it, and the read is strided exactly like the write.
 
-![One warp of the block, lanes 0 through 31 of `threadIdx.x`, and the memory each site touches. The load from A walks 32 rows at a stride of K, so the hardware fetches 32 separate cache lines; the load from B is uniform across all 32 lanes, so one value is broadcast into every register.](/images/gemm/inefficient-warp-access.png "large")
+![One warp's loads: 32 rows of A at a stride of K, which is 32 separate cache lines, against one value of B broadcast to every lane.](/images/gemm/inefficient-warp-access.png "large")
 
 Memory comes back from the L1 in `32-byte` sectors. A warp asking for 32 contiguous floats wants `128 bytes`, which is 4 sectors, and 4 is the best any warp can do. Two of our three arrays need 32, and C needs it twice.
 

@@ -14,6 +14,8 @@ The fix is to store `As` transposed, as `BK` rows of `BM` floats instead of `BM`
 
 The transpose has to happen on the store side, not the load side, and that is the constraint the whole indexing scheme is built around. The read from global memory has to stay coalesced, which means a warp must read along a row of A, along the K dimension. So the thread reads four contiguous floats of A, then writes them into four different rows of `As`, one element each, scattering as it goes. We accept a scattered write into shared memory to preserve a contiguous read from global memory and to buy a contiguous read out of shared memory later. `Bs` needs none of this; it is already stored with `BN` as the fast dimension, which is the direction its readers want.
 
+![One float4 of A is scattered into four rows of the transposed As, so a thread's TM = 8 values become two 128 bit loads instead of eight strided 32 bit ones.](/images/gemm/vectorized-transpose.png "large")
+
 ### The Kernel
 
 The tile shape and thread count are unchanged from kernel 6, so this is a pure instruction level change with the same launch:

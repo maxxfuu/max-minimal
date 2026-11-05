@@ -41,7 +41,7 @@ const experiences: ExperienceEntry[] = [
   {
     time: "May 2026 - Present",
     title: <>Kernel Engineering at <span className="text-foreground">7labs</span></>,
-    description: "Working on GPU kernels and runtime inference for large language models at 7labs.",
+    description: "Working on GPU kernels and distributed inference.",
   },
   {
     time: "May 2025 - Aug 2025",

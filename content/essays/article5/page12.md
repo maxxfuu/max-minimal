@@ -28,6 +28,8 @@ The row stride of `As` is `BM = 128`, and 128 is a multiple of 32. So in the ban
 
 The column part of the address contributes nothing at all. Every lane's bank is decided entirely by which row of A it is carrying, and that is exactly the index that varies slowest across a warp. With `BK = 16` the load index is `innerRowA = threadIdx.x / (BK / 4) = threadIdx.x / 4`, so the 32 lanes of a warp cover only **8 distinct rows**, four lanes each. Eight banks, four lanes per bank, a 4-way conflict on each of the four stores. Nsight measured 4.2-way, which is that plus the ragged edge of the last warp.
 
+![With A_STRIDE = 128 the bank is innerRowA mod 32, so a warp's 32 lanes land on 8 banks with 4 lanes each, a 4-way conflict.](/images/gemm/bank-conflicts-before.png "full")
+
 Worth noticing that this got worse as the kernel got better. At kernel 7's `BK = 8` the divisor was 2, so a warp covered 16 rows and the conflict was only 2-way. Doubling `BK` halved the number of distinct rows a warp touches and doubled the conflict.
 
 ### The Fix Is One Constant
@@ -47,6 +49,8 @@ With `A_STRIDE = 130` and `130 mod 32 = 2`:
 ```
 
 Within a warp `innerColA = threadIdx.x % 4` takes the values 0 through 3, so for a fixed `j` the column term takes the four values `{2j, 8 + 2j, 16 + 2j, 24 + 2j}`, and each of those is offset by one of the 8 values of `innerRowA`. Four groups of eight, 32 distinct banks, no two lanes colliding. The conflict is gone.
+
+![With A_STRIDE = 130 the column term survives in the bank index, so the same 32 lanes land on 32 distinct banks.](/images/gemm/bank-conflicts-after.png "full")
 
 The rest of the kernel is kernel 8 with `BM` replaced by `A_STRIDE` in the three places that index `As`, plus the extra 128 bytes of shared memory per block that the padding costs.
 

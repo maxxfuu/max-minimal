@@ -6,11 +6,11 @@ The reason that count is stuck is the thread mapping, not the memory. One thread
 
 So give a thread more than one output. Let one thread own a short column of C, `TM` elements tall, all in the same column and in consecutive rows. Those `TM` outputs all need the same element of B, because they share a column, and they need `TM` different elements of A. The thread loads the B value once into a register and multiplies it against `TM` values of A. One shared memory read now feeds `TM` FMAs instead of one.
 
-![One block owns a 64 x 64 tile of C and walks K in steps of BK = 8, loading a 64 x 8 tile of A into As and an 8 x 64 tile of B into Bs. The zoom on a 16 x 16 corner of the C tile shows the change in mapping: kernel 4 gave one thread one cell, and now one thread owns a column of 8 consecutive cells in the same column, with the next thread taking the column beside it.](/images/gemm/register-1d-overview.png "full")
+![One block owns a 64 x 64 tile of C walked in steps of BK = 8, and one thread now owns a column of 8 consecutive cells instead of a single cell.](/images/gemm/register-1d-overview.png "full")
 
 That is the whole idea, and the accounting for it is immediate. Per step of the K loop a thread reads `1` value of B and `TM` values of A, so `1 + TM` reads produce `TM` results instead of `2` reads producing `1`.
 
-![One thread at one step of the BK loop. Kernel 4's two shared memory reads per result become 1 + TM reads for TM results: a single read from the Bs row lands in a register and is reused TM times, while TM values are read down a column of As, and the two feed TM = 8 fused multiply-adds accumulating into 8 registers. The figure names the broadcast register Btmp; the listing below calls it regN.](/images/gemm/register-1d-inner-loop.png "large")
+![One step of the BK loop, where a single Bs value is read into the register regN and reused across TM = 8 values of As, feeding 8 accumulators.](/images/gemm/register-1d-inner-loop.png "large")
 
 ### The Kernel
 
@@ -25,69 +25,68 @@ dim3 blockDim((BM * BN) / TM);   // 512
 sgemm_register_tiling_1d<BM, BN, BK, TM><<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
 ```
 
-``` cuda 
-#include <cuda_runtime.h>
+```cuda
+// Block tile is BM x BN of C, walked over K in chunks of BK.
+// Thread count = (BM * BN) / TM.
+template <const int BM, const int BN, const int BK, const int TM>
+__global__ void sgemm_register_tiling_1d(int M, int N, int K, float alpha, const float *A, const float *B, float beta, float *C) {
+  // blockIdx.x indexes columns so that consecutive blocks share the same rows
+  // of A -- better L2 hit rate than the .x=row mapping in kernel 3.
+  const int cRow = blockIdx.y;
+  const int cCol = blockIdx.x;
 
-// Template accepts block dimensions followed by a thread mulitiplier
-template <const int block_M, const int block_N, const int block_K, const int thread_multiplier>
-__global__ void sgemm_1d_register_tiling(int M, int N, int K, float alpha, float beta, float *A, float *B, float *C) {
-  const int C_Row = blockIdx.y;
-  const int C_Col = blockIdx.x;
+  __shared__ float As[BM * BK];
+  __shared__ float Bs[BK * BN];
 
-  // shared memory allocation
-  __shared__ float A_smem[block_M * block_K];
-  __shared__ float B_smem[block_K * block_N];
+  // position of this thread within the BM x BN output tile.
+  // threadRow is the *tile* row: this thread owns rows
+  // [threadRow*TM, threadRow*TM + TM) of the block tile.
+  const int threadCol = threadIdx.x % BN;
+  const int threadRow = threadIdx.x / BN;
 
-  // Set pointer at top left coner of the block tile
-  A += C_Row * block_M * K;
-  B += C_Col * block_N;
-  C += C_Row * block_M * N * C_Col * block_N;
+  // move the pointers to the start of this block's work
+  A += cRow * BM * K;                   // row = cRow, col = 0
+  B += cCol * BN;                       // row = 0,    col = cCol
+  C += cRow * BM * N + cCol * BN;       // row = cRow, col = cCol
 
-  // calculate coordinates for computation within the block tile
-  const int thread_col = threadIdx.x % block_N;
-  const int thread_row = threadIdx.x % block_N;
+  // Determine where the thread loads the tiles A and B in SMEM 
+  const int innerColA = threadIdx.x % BK;  // 0..BK-1
+  const int innerRowA = threadIdx.x / BK;  // 0..BM-1
+                                           //
+  const int innerColB = threadIdx.x % BN;  // 0..BN-1
+  const int innerRowB = threadIdx.x / BN;  // 0..BK-1
 
-  // calculate coordinates for block tile
-  const int inner_col_A = threadIdx.x % block_K;
-  const int inner_row_A = threadIdx.x / block_K;
+  // per-thread accumulators, live in registers
+  float threadResults[TM] = {0.0f};
 
-  const int inner_col_B = threadIdx.x % block_N;
-  const int inner_row_B = threadIdx.x / block_N;
-
-  // static array allocated within the on-chip registers
-  float thread_results[thread_multiplier] = {0.0f};
-
-  for (int block_idx = 0; block_idx < K; block_idx += block_K) {
-    // load data from global memory into shared memory
-    A_smem[inner_row_A * block_K + inner_col_A] = A[inner_row_A * K + inner_col_A];
-    B_smem[inner_row_B * block_K + inner_col_B] = B[inner_row_B * K + inner_col_B];
-
+  for (int bkIdx = 0; bkIdx < K; bkIdx += BK) {
+    // populate the SMEM caches
+    As[innerRowA * BK + innerColA] = A[innerRowA * K + innerColA];
+    Bs[innerRowB * BN + innerColB] = B[innerRowB * N + innerColB];
     __syncthreads();
 
-    // advance global pointers to the next block iteration
-    A += block_K;
-    B += block_K * N;
+    // advance onto the next chunk along K
+    A += BK;
+    B += BK * N;
 
-    // compute thread_multiplier elelments per thread
-    for (int dot_product_idx = 0; dot_product_idx < block_K; ++dot_product_idx) {
-      // load one temporary B element into a register per iteration
-      float temp_B = B_smem[dot_product_idx * block_N + thread_col];
-
-      for (int res_idx = 0; res_idx < thread_multiplier; ++res_idx) {
-        thread_results[res_idx] += A_smem[(thread_row * thread_multiplier + res_idx) * block_K + dot_product_idx] * temp_B;
+    // compute the per-thread partial results out of SMEM
+    for (int dotIdx = 0; dotIdx < BK; ++dotIdx) {
+      // one B value, hoisted into a register and reused TM times below
+      float regN = Bs[dotIdx * BN + threadCol];
+      for (int resIdx = 0; resIdx < TM; ++resIdx) {
+        threadResults[resIdx] += As[(threadRow * TM + resIdx) * BK + dotIdx] * regN;
       }
     }
-
     __syncthreads();
   }
 
-  for (int res_idx = 0; res_idx < thread_multiplier; ++res_idx) {
-    C[(thread_row * thread_multiplier + res_idx) * N + thread_col] =
-        alpha * thread_results[res_idx] +
-        beta * C[(thread_row * thread_multiplier + res_idx) * N + thread_col];
+  // write out the TM results owned by this thread
+  for (int resIdx = 0; resIdx < TM; ++resIdx) {
+    C[(threadRow * TM + resIdx) * N + threadCol] =
+        alpha * threadResults[resIdx] +
+        beta * C[(threadRow * TM + resIdx) * N + threadCol];
   }
 }
-
 ```
 
 ### Mechanics

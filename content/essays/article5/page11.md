@@ -102,6 +102,8 @@ The space here is 16 hand-picked points rather than an exhaustive grid, chosen t
 
 These come from the autotuner's own harness, which uses a shorter warm-up and fewer trials than the benchmark the rest of this article quotes, so read them against each other rather than against the results table.
 
+![The fourteen legal configurations ranked by runtime, with the 128 x 64, 4 x 4, 128 thread winner at 4.55 ms and the slowest legal config 1.36 times behind.](/images/gemm/autotune-sweep.png "full")
+
 Three things fall out of that ranking. The winner is the non-square `128 x 64` with the small `4 x 4` thread tile, ahead of every square configuration, but only by 2.4%, so the reasoning of the last two sections was close to right and confidently wrong about the final step. The spread between the best and worst legal config is **1.36 times**, which is a larger factor than several of the optimizations in this series delivered individually, for the same kernel body and no new ideas at all. And `BK` is not monotone: holding `128 x 128` fixed it runs 5.00 ms at `BK = 8`, 4.66 at 16 and 4.91 at 32, so there is a real interior optimum that no formula in this article predicts.
 
 The last row deserves one more look. `256x128x16 ... 512t` has the largest block tile in the sweep, which by `K x (1/BM + 1/BN)` moves the least global traffic of anything here, and it finishes last by a wide margin. At 512 threads and 96 registers per thread it fits one block per SM, so it spends the entire kernel with nothing to switch to whenever it reaches a barrier.

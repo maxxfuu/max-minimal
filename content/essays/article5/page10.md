@@ -12,6 +12,8 @@ There is one twist that the parameter names give away. A warp has 32 threads eac
 
 The sub-tiles are interleaved rather than laid end to end. Within one sub-tile of `32 x 16`, the warp's 32 threads form a compact `8 x 4` grid of `4 x 4` patches, so the warp's read out of `Bs` for that sub-tile spans exactly `WSUBN = 16` consecutive floats and its read out of `As` spans `WSUBM = 32`. Compare that with kernel 7, where the equivalent read spanned all 128 columns of the tile. The instruction count per warp is unchanged; the footprint of each instruction is eight times narrower.
 
+![The 128 x 64 block tile splits into four 64 x 32 warp tiles, each into 2 x 2 sub-tiles of 32 x 16, each an 8 x 4 grid of 4 x 4 thread patches.](/images/gemm/warp-tiling-hierarchy.png "full")
+
 `WMITER` is not a parameter you pass. It is whatever is left once the others are fixed, which is why it is a `constexpr` derived inside the kernel:
 
 ```
